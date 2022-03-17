@@ -1,0 +1,18 @@
+annotations:
+  application.giantswarm.io/team: rocket
+apiVersion: v2
+description: "A helm chart for creating Cluster API clusters with the vSphere provider (CAPV)."
+keywords:
+- capv
+- vsphere
+kubeVersion: ">=1.19.0 < 1.23.0"
+maintainers:
+- name: Team Rocket
+  email: team-rocket@giantswarm.io
+name: cluster-vsphere
+restrictions:
+  compatibleProviders:
+    - vsphere
+sources:
+- https://github.com/giantswarm/cluster-vsphere
+version: 0.1.0

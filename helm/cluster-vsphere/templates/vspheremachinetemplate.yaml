@@ -1,0 +1,26 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: VSphereMachineTemplate
+metadata:
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: {{ include "resource.default.name" $ }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      cloneMode: {{ .Values.template.cloneMode }}
+      datacenter: {{ .Values.vcenter.datacenter }}
+      datastore: {{ .Values.vcenter.datastore }}
+      diskGiB: {{ .Values.template.diskGiB }}
+      folder: {{ .Values.template.folder }}
+      memoryMiB: {{ .Values.template.memoryMiB }}
+      network:
+        devices:
+        - dhcp4: true
+          networkName: {{ .Values.template.networkName }}
+      numCPUs: {{ .Values.template.numCPUs }}
+      resourcePool: {{ .Values.template.resourcePool }}
+      server: {{ .Values.vcenter.server }}
+      storagePolicyName: {{ .Values.template.storagePolicyName }}
+      template: {{ .Values.template.templateName }}
+      thumbprint: {{ .Values.vcenter.thumbprint }}

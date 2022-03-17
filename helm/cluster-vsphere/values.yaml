@@ -1,0 +1,125 @@
+# cluster
+# Cluster-specific configuration
+cluster:
+
+  # cluster.kubernetesVersion
+  # Kubernetes version to deploy. Must match the version available in the
+  # image defined at template.templateName
+  kubernetesVersion: ""
+
+  # cluster.name
+  # Cluster name; used as a base for names of all cluster resources.
+  name: ""
+
+# network
+# Network-specific configuration options.
+network:
+
+  # network.podsCidr
+  # List of CIDR(s) to use for pod IPs.
+  podsCidr:
+  - 192.168.0.0/16
+
+# vcenter
+# Configuration for vSphere API access.
+vcenter:
+
+  # vcenter.datacenter
+  # Name of the datacenter to deploy nodes into.
+  datacenter: ""
+
+  # vcenter.datastore
+  # Name of the datastore for node disk storage.
+  datastore: ""
+
+  # vcenter.server
+  # URL of the VSphere API.
+  server: ""
+
+  # vcenter.thumbprint
+  # TLS thumbprint of the VSphere API.
+  thumbprint: ""
+
+# template
+# Provisioning options for node templates.
+template:
+
+  # template.cloneMode
+  # Method used to clone template image.
+  cloneMode: linkedClone
+
+  # template.diskGiB
+  # Node disk size in GB. Must be at least as large as the source image.
+  diskGiB: 0
+
+  # template.folder
+  # VSphere folder to deploy instances in. Must already exist.
+  folder: ""
+
+  # template.memoryMiB
+  # Node memory allocation in MB.
+  memoryMiB: 0
+
+  # template.networkName
+  # Segment name to attach nodes to. Must already exist.
+
+  # template.numCPUs
+  # Number of CPUs to assign to nodes.
+  numCPUs: 0
+
+  # template.resourcePool
+  # Resource pool to allocate nodes from. Must already exist.
+  resourcePool: ""
+
+  # template.storagePolicyName
+  # Storage policy to use. Optional, but if specified then it must already exist.
+  storagePolicyName: null
+
+  # template.templateName
+  # Image template name to use for nodes.
+  templateName: ""
+
+# kubeadm
+# Provisioning options passed to kubeadm.
+kubeadm:
+
+  # kubeadm.users
+  # If defined then all users will be added to all nodes.
+  users:
+
+    # kubeadm.users.[]
+    # List of users to be created on all nodes.
+    - name: ""
+
+      # kubeadm.users.[].authorizedKeys.[]
+      # All public SSH keys to assign to this user.
+      authorizedKeys:
+        - ""
+
+# controlPlane
+# Configuration options for the control plane instances.
+controlPlane:
+
+  # controlPlane.replicas
+  # Number of control plance instances to create. Must be an odd number.
+  replicas: 0
+
+  # controlPlane.endpoint
+  # Kubernetes API configuration.
+  endpoint:
+
+    # controlPlane.endpoint.host
+    # Floating IP for access to the Kubernetes API.
+    host: ""
+
+    # controlPlane.endpoint.port
+    # Port for access to the Kubernetes API.
+    port: 6443
+
+# worker
+# Configuration options for the worker instances.
+worker:
+
+  # worker.replicas
+  # Number of worker instances to create.
+  replicas: 0

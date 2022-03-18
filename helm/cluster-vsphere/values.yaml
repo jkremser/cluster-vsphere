@@ -62,6 +62,7 @@ template:
 
   # template.networkName
   # Segment name to attach nodes to. Must already exist.
+  networkName: ""
 
   # template.numCPUs
   # Number of CPUs to assign to nodes.

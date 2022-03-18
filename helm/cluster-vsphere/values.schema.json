@@ -80,6 +80,9 @@
                 "memoryMiB": {
                     "type": "integer"
                 },
+                "networkName": {
+                    "type": "string"
+                },
                 "numCPUs": {
                     "type": "integer"
                 },

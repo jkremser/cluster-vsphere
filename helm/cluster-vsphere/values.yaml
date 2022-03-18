@@ -11,6 +11,10 @@ cluster:
   # Cluster name; used as a base for names of all cluster resources.
   name: ""
 
+  # cluster.organization
+  # The organization which owns this cluster.
+  organization: ""
+
 # network
 # Network-specific configuration options.
 network:

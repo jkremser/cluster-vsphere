@@ -15,4 +15,4 @@ restrictions:
     - vsphere
 sources:
 - https://github.com/giantswarm/cluster-vsphere
-version: 0.1.0
+version: 0.1.1

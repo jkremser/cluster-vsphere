@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2022-03-29
+
 ### Added
 
 - Initial chart implementation
 
-[Unreleased]: https://github.com/giantswarm/cluster-vsphere/tree/main
+[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/giantswarm/cluster-vsphere/releases/tag/v0.1.0

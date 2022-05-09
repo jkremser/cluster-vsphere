@@ -5,7 +5,6 @@ description: "A helm chart for creating Cluster API clusters with the vSphere pr
 keywords:
 - capv
 - vsphere
-kubeVersion: ">=1.19.0 < 1.23.0"
 maintainers:
 - name: Team Rocket
   email: team-rocket@giantswarm.io

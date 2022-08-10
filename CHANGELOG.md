@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Allow setting etcd image repository and tag.
+- Set the default etcd version to 3.5.4 (kubeadm default is 3.5.0 which is not
+  recommended in production).
+- Set the default etcd image to retagged Giant Swarm one.
+
 ## [0.1.2] - 2022-05-09
 
 ## [0.1.1] - 2022-03-29

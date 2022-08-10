@@ -14,6 +14,10 @@ spec:
       controllerManager:
         extraArgs:
           cloud-provider: external
+      etcd:
+        local:
+          imageRepository: {{ .Values.controlPlane.etcd.imageRepository }}
+          imageTag: {{ .Values.controlPlane.etcd.imageTag }}
     files:
     - content: |
         apiVersion: v1

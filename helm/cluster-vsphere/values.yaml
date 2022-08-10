@@ -121,6 +121,10 @@ controlPlane:
     # Port for access to the Kubernetes API.
     port: 6443
 
+  etcd:
+    imageRepository: "giantswarm"
+    imageTag: 3.5.4-0-k8s
+
 # worker
 # Configuration options for the worker instances.
 worker:

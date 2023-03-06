@@ -1,134 +1,282 @@
-# cluster
-# Cluster-specific configuration
-cluster:
+apiServer:
+  enableAdmissionPlugins: "NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,PersistentVolumeClaimResize,DefaultStorageClass,Priority,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
+  featureGates: "TTLAfterFinished=true"
+controllerManager:
+  featureGates: "ExpandPersistentVolumes=true,TTLAfterFinished=true"
 
-  # cluster.kubernetesVersion
-  # Kubernetes version to deploy. Must match the version available in the
-  # image defined at template.templateName
-  kubernetesVersion: ""
+clusterDescription: ""  # Cluster description used in metadata.
 
-  # cluster.name
-  # Cluster name; used as a base for names of all cluster resources.
-  name: ""
-
-  # cluster.organization
-  # The organization which owns this cluster.
-  organization: ""
-
-# network
-# Network-specific configuration options.
+servicePriority: "highest"
+clusterLabels: {}
 network:
+  podsCidrBlocks:
+  - "192.168.0.0/16"
+  servicesCidrBlocks:
+  - "192.168.1.0/16"
+  controlPlaneEndpoint:
+    host: ""  # [string] Manually select an IP for kube API. "" for auto selection from pool.
+    port: ""  # [int] Port to use. "" defaults to 6443.
 
-  # network.podsCidr
-  # List of CIDR(s) to use for pod IPs.
-  podsCidr:
-  - 192.168.0.0/16
 
-# vcenter
-# Configuration for vSphere API access.
-vcenter:
-
-  # vcenter.datacenter
-  # Name of the datacenter to deploy nodes into.
-  datacenter: ""
-
-  # vcenter.datastore
-  # Name of the datastore for node disk storage.
-  datastore: ""
-
-  # vcenter.server
-  # URL of the VSphere API.
-  server: ""
-
-  # vcenter.thumbprint
-  # TLS thumbprint of the VSphere API.
-  thumbprint: ""
-
-# template
-# Provisioning options for node templates.
-template:
-
-  # template.cloneMode
-  # Method used to clone template image.
-  cloneMode: linkedClone
-
-  # template.diskGiB
-  # Node disk size in GB. Must be at least as large as the source image.
-  diskGiB: 0
-
-  # template.folder
-  # VSphere folder to deploy instances in. Must already exist.
-  folder: ""
-
-  # template.memoryMiB
-  # Node memory allocation in MB.
-  memoryMiB: 0
-
-  # template.networkName
-  # Segment name to attach nodes to. Must already exist.
-  networkName: ""
-
-  # template.numCPUs
-  # Number of CPUs to assign to nodes.
-  numCPUs: 0
-
-  # template.resourcePool
-  # Resource pool to allocate nodes from. Must already exist.
-  resourcePool: ""
-
-  # template.storagePolicyName
-  # Storage policy to use. Optional, but if specified then it must already exist.
-  storagePolicyName: null
-
-  # template.templateName
-  # Image template name to use for nodes.
-  templateName: ""
-
-# kubeadm
-# Provisioning options passed to kubeadm.
-kubeadm:
-
-  # kubeadm.users
-  # If defined then all users will be added to all nodes.
-  users:
-
-    # kubeadm.users.[]
-    # List of users to be created on all nodes.
-    - name: ""
-
-      # kubeadm.users.[].authorizedKeys.[]
-      # All public SSH keys to assign to this user.
-      authorizedKeys:
-        - ""
-
-# controlPlane
-# Configuration options for the control plane instances.
-controlPlane:
-
-  # controlPlane.replicas
-  # Number of control plance instances to create. Must be an odd number.
-  replicas: 0
-
-  # controlPlane.endpoint
-  # Kubernetes API configuration.
-  endpoint:
-
-    # controlPlane.endpoint.host
-    # Floating IP for access to the Kubernetes API.
-    host: ""
-
-    # controlPlane.endpoint.port
-    # Port for access to the Kubernetes API.
-    port: 6443
-
+controlPlane:  # Must match nodeClasses' fields except "name" and must contain "replicas".
+  replicas: 0  # Number of control plane instances to create (odd number).
+  machineTemplate:  # check .nodeClasses.default for docs
+    template: ""  # template used to create (or) upgrade control plane nodes.
+    resourcePool: ""  # ResourcePool is the name or inventory path of the resource pool in which the virtual machine is created/located.
+    memoryMiB: 8192
+    network:
+      devices:
+      - dhcp4: true
+        networkName: 'grasshopper-capv'
   etcd:
     imageRepository: "giantswarm"
     imageTag: 3.5.4-0-k8s
+  dns:
+    imageRepository: projects.registry.vmware.com/tkg
+    imageTag: v1.7.0_vmware.12
+  image:
+    repository: projects.registry.vmware.com/tkg
+  resourceRatio: 8  # Ratio between node resources and apiserver resource requests.
 
-# worker
-# Configuration options for the worker instances.
-worker:
+nodePools:
+  worker:
+    class: default
+    replicas: 2
 
-  # worker.replicas
-  # Number of worker instances to create.
-  replicas: 0
+sshTrustedUserCAKeys:
+  # Taken from https://vault.operations.giantswarm.io/v1/ssh/public_key
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM4cvZ01fLmO9cJbWUj7sfF+NhECgy+Cl0bazSrZX7sU vault-ca@vault.operations.giantswarm.io
+
+osUsers:
+- name: "giantswarm"
+  sudo: "ALL=(ALL) NOPASSWD:ALL"
+
+userContext:
+  secretRef:
+    secretName: ""  # Name of the pre-existing secret containing the credentials of the VSphere user.
+
+
+# Configuration for vSphere API access.
+vcenter:
+  # Name of the default datacenter to deploy nodes into.
+  datacenter: ""
+
+  # Name of the default datastore for node disk storage.
+  datastore: ""
+
+  # URL of the VSphere API.
+  server: ""
+
+  # TLS thumbprint of the VSphere API.
+  thumbprint: ""
+
+proxy:  # (Optional) Defines HTTP proxy environment variables.
+  secretName: ""
+  enabled: false
+
+oidc:
+  issuerUrl: ""
+  caFile: ""
+  clientId: ""
+  usernameClaim: ""
+  groupsClaim: ""
+  usernamePrefix: ""
+
+# Cluster-specific configuration
+cluster:
+  # Kubernetes version to deploy. Must match the version available in the image defined at template
+  kubernetesVersion: ""
+
+  # Cluster name; used as a base for names of all cluster resources.
+  name: ""
+
+  # The organization which owns this cluster.
+  organization: ""
+
+  # enable encryption at REST feature of API server
+  enableEncryptionProvider: true
+
+connectivity:
+  containerRegistries: {}
+#   docker.io:
+#   - endpoint: "registry-1.docker.io"
+#     credentials:
+#       username: ""
+#       password: ""
+#   - endpoint: "my-mirror-registry.mydomain.io"
+#     credentials:
+#       auth: ""
+#       identitytoken: ""
+
+# Class definitions for worker node pools or controle planes. The "name" of the class is the key of the object. Example:
+nodeClasses:
+  # Provisioning options for node templates.
+  # kubectl explain VSphereMachineTemplate.spec.template.spec
+  default:
+
+    # CloneMode specifies the type of clone operation. The LinkedClone mode is
+    # only support for templates that have at least one snapshot. If the template
+    # has no snapshots, then CloneMode defaults to FullClone. When LinkedClone
+    # mode is enabled the DiskGiB field is ignored as it is not possible to
+    # expand disks of linked clones. Defaults to LinkedClone, but fails
+    # gracefully to FullClone if the source of the clone operation has no
+    # snapshots.
+    # <string>
+    # cloneMode: linkedClone
+
+    # AdditionalDisksGiB holds the sizes of additional disks of the virtual
+    # machine, in GiB Defaults to the eponymous property value in the template
+    # from which the virtual machine is cloned.
+    # <[]integer>
+    # additionalDisksGiB: []
+
+    # CustomVMXKeys is a dictionary of advanced VMX options that can be set on VM
+    # Defaults to empty map
+    # <map[string]string>
+    # customVMXKeys: {}
+
+    # Datacenter is the name or inventory path of the datacenter in which the
+    # virtual machine is created/located. Defaults to * which selects the default
+    # datacenter.
+    # <string>
+    # datacenter: ""
+
+    # Datastore is the name or inventory path of the datastore in which the
+    # virtual machine is created/located.
+    # <string>
+    # datastore: ""
+
+    # DiskGiB is the size of a virtual machine's disk, in GiB. Defaults to the
+    # eponymous property value in the template from which the virtual machine is
+    # cloned.
+    # <integer>
+    # diskGiB: 0
+
+    # FailureDomain is the failure domain unique identifier this Machine should
+    # be attached to, as defined in Cluster API. For this infrastructure
+    # provider, the name is equivalent to the name of the VSphereDeploymentZone.
+    # <string>
+    # failureDomain: ""
+
+    # Folder is the name or inventory path of the folder in which the virtual
+    # machine is created/located.
+    # <string>
+    # folder: ""
+
+    # HardwareVersion is the hardware version of the virtual machine. Defaults to
+    # the eponymous property value in the template from which the virtual machine
+    # is cloned. Check the compatibility with the ESXi version before setting the
+    # value.
+    # <string>
+    # hardwareVersion: ""
+
+    # MemoryMiB is the size of a virtual machine's memory, in MiB. Defaults to
+    # the eponymous property value in the template from which the virtual machine
+    # is cloned.
+    # <integer>
+    # memoryMiB: 0
+
+    # Network is the network configuration for this machine's VM.
+    # <Object> -required-
+    network:
+      # Devices is the list of network devices used by the virtual machine.
+      # TODO(akutz) Make sure at least one network matches the ClusterSpec.CloudProviderConfiguration.Network.Name
+      # can contain also: searchDomains, mtu, macAddr, gateway4, routes, nameservers, etc
+      # check kubectl explain VSphereMachineTemplate.spec.template.spec.network.devices for docs
+      # <[]Object> -required-
+      devices:
+        # DHCP4 is a flag that indicates whether or not to use DHCP for IPv4 on this
+        # device. If true then IPAddrs should not contain any IPv4 addresses.
+      - dhcp4: true
+        # NetworkName is the name of the vSphere network to which the device will be connected.
+        # <string> -required-
+        networkName: 'grasshopper-capv'
+
+      # PreferredAPIServeCIDR is the preferred CIDR for the Kubernetes API server
+      # endpoint on this machine
+      # preferredAPIServerCidr: ""
+
+      # Routes is a list of optional, static routes applied to the virtual machine.
+      # <[]Object>
+      # routes: []
+      #   # Metric is the weight/priority of the route.
+      #   # <integer> -required-
+      # - metric: 50
+      #   # To is an IPv4 or IPv6 address.
+      #   # <string> -required-
+      #   to: ""
+      #   # Via is an IPv4 or IPv6 address.
+      #   # <string> -required-
+      #   via: ""
+
+
+    # NumCPUs is the number of virtual processors in a virtual machine. Defaults
+    # to the eponymous property value in the template from which the virtual
+    # machine is cloned.
+    # <integer>
+    # numCPUs: 0
+
+    # NumCPUs is the number of cores among which to distribute CPUs in this
+    # virtual machine. Defaults to the eponymous property value in the template
+    # from which the virtual machine is cloned.
+    # <integer>
+    # numCoresPerSocket: 0
+
+    # OS is the Operating System of the virtual machine Defaults to Linux
+    # <string>
+    # os: "Linux"
+
+    # PciDevices is the list of pci devices used by the virtual machine.
+    # pciDevices: []
+      # # DeviceID is the device ID of a virtual machine's PCI, in integer. Defaults
+      # # to the eponymous property value in the template from which the virtual
+      # # machine is cloned.
+      # # <integer>
+      # deviceId: 0
+      # # VendorId is the vendor ID of a virtual machine's PCI, in integer. Defaults
+      # # to the eponymous property value in the template from which the virtual
+      # # machine is cloned.
+      # # <integer>
+      # vendorId: 0
+
+    # ProviderID is the virtual machine's BIOS UUID formated as
+    # vsphere://12345678-1234-1234-1234-123456789abc
+    # <string>
+    # providerID: ""
+
+    # ResourcePool is the name or inventory path of the resource pool in which
+    # the virtual machine is created/located.
+    # <string>
+    # resourcePool: ""
+
+    # Server is the IP address or FQDN of the vSphere server on which the virtual
+    # machine is created/located.
+    # <string>
+    # server: ""
+
+    # Snapshot is the name of the snapshot from which to create a linked clone.
+    # This field is ignored if LinkedClone is not enabled. Defaults to the
+    # source's current snapshot.
+    # <string>
+    # snapshot: ""
+
+    # StoragePolicyName of the storage policy to use with this Virtual Machine
+    # <string>
+    # storagePolicyName: ""
+
+    # TagIDs is an optional set of tags to add to an instance. Specified tagIDs
+    # must use URN-notation instead of display names.
+    # <[]string>
+    # tagIDs: []
+
+    # Template is the name or inventory path of the template used to clone the
+    # virtual machine.
+    # <string> -required-
+    template: ""
+
+    # Thumbprint is the colon-separated SHA-1 checksum of the given vCenter
+    # server's host certificate When this is set to empty, this VirtualMachine
+    # would be created without TLS certificate validation of the communication
+    # between Cluster API Provider vSphere and the VMware vCenter server.
+    # <string>
+    # thumbprint: ""

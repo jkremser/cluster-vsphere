@@ -1,0 +1,74 @@
+baseDomain: k8s.test
+clusterDescription: "test cluster"
+organization: "giantswarm"
+
+cluster:
+  name: test
+  kubernetesVersion: "v1.22.5+vmware.1"
+  # kubernetesVersion: "v1.20.10"
+  enableEncryptionProvider: false
+
+vcenter:
+  server: "https://foo.example.com"
+  datacenter: "Datacenter"
+  datastore: "vsanDatastore"
+  # openssl s_client -connect https://foo.example.com < /dev/null 2>/dev/null | openssl x509 -fingerprint -noout -in /dev/stdin
+  thumbprint: "F7:CF:F9:E5:99:39:FF:C1:D7:14:F1:3F:8A:42:21:95:3B:A1:6E:16"
+
+controlPlane:
+  replicas: 1
+  catalog: "giantswarm"
+  machineTemplate:
+    template: "ubuntu-2004-kube-v1.22.5+vmware.1"
+    thumbprint: "F7:CF:F9:E5:99:39:FF:C1:D7:14:F1:3F:8A:42:21:95:3B:A1:6E:16"
+    cloneMode: "linkedClone"
+    # template: ubuntu-1804-kube-v1.20.10
+    server: https://foo.example.com
+    diskGiB: 25
+    numCPUs: 2
+    resourcePool: "grasshopper"
+
+    # todo: make it DRY
+    datacenter: "Datacenter"
+    datastore: "vsanDatastore"
+    network:
+      devices:
+      - networkName: 'grasshopper-capv'
+        dhcp4: true
+
+network:
+  podsCidrBlocks:
+  - "192.168.0.0/16"
+  servicesCidrBlocks:
+  - "192.168.1.0/16"
+  controlPlaneEndpoint:
+    host: "10.10.222.241"  # [string] Manually select an IP for kube API. "" for auto selection from pool.
+    port: "6443"  # [int] Port to use. "" defaults to 6443.
+  loadBalancer:
+    vipSubnet: "178.170.32.1/24"
+
+nodeClasses:
+  default:
+    template: "ubuntu-2004-kube-v1.22.5+vmware.1"
+    thumbprint: "F7:CF:F9:E5:99:39:FF:C1:D7:14:F1:3F:8A:42:21:95:3B:A1:6E:16"
+    cloneMode: "linkedClone"
+    # template: ubuntu-1804-kube-v1.20.10
+    diskGiB: 25
+    numCPUs: 2
+    resourcePool: "grasshopper"
+    datacenter: "Datacenter"
+    datastore: "vsanDatastore"
+    server: https://foo.example.com
+    network:
+      devices:
+      - networkName: 'grasshopper-capv'
+        dhcp4: true
+
+nodePools:
+  worker:
+    class: "default"
+    replicas: 2
+
+userContext:
+  secretRef:
+    secretName: "capv-credentials"

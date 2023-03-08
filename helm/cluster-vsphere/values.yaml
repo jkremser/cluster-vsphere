@@ -96,6 +96,12 @@ cluster:
   # enable encryption at REST feature of API server
   enableEncryptionProvider: true
 
+# let's use the kubectl image defaults
+kubectlImage:
+  registry: quay.io
+  name: giantswarm/kubectl
+  tag: 1.23.5
+
 connectivity:
   containerRegistries: {}
 #   docker.io:

@@ -4,8 +4,9 @@
 # following:
 #
 #     $ kubectl get helmrelease -n org-multi-project
-#     NAME                                  AGE     READY   STATUS
-#     pawe1-cilium                          99m     False   failed to get last release revision
+#     NAME                           AGE     READY   STATUS
+#     pawe1-cilium                   99m     False   failed to get last release revision
+#     pawe1-cloud-provider-vsphere   99m     False   failed to get last release revision
 #
 # Both HelmRelease CRs in this case have deletionTimestamp and finalizers set,
 # e.g.:
@@ -14,7 +15,7 @@
 #     finalizers:
 #       - finalizers.fluxcd.io
 #
-# To work around this post-delete Job deletes all finalizers on all HelmRelease
+# To work around this, post-delete Job deletes all finalizers on all HelmRelease
 # CRs created with this chart.
 #
 apiVersion: v1
@@ -48,6 +49,7 @@ rules:
     resources: ["helmreleases"]
     resourceNames:
       - "{{ include "resource.default.name" $ }}-cilium"
+      - "{{ include "resource.default.name" $ }}-cloud-provider-vsphere"
     verbs: ["patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1

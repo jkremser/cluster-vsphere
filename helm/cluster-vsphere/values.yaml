@@ -19,7 +19,7 @@ network:
 
 
 controlPlane:  # Must match nodeClasses' fields except "name" and must contain "replicas".
-  replicas: 0  # Number of control plane instances to create (odd number).
+  replicas: 1  # Number of control plane instances to create (odd number).
   machineTemplate:  # check .nodeClasses.default for docs
     template: ""  # template used to create (or) upgrade control plane nodes.
     resourcePool: ""  # ResourcePool is the name or inventory path of the resource pool in which the virtual machine is created/located.
@@ -51,15 +51,16 @@ osUsers:
 - name: "giantswarm"
   sudo: "ALL=(ALL) NOPASSWD:ALL"
 
-userContext:
-  secretRef:
-    secretName: ""  # Name of the pre-existing secret containing the credentials of the VSphere user.
-
-
 # Configuration for vSphere API access.
 vcenter:
   # Name of the default datacenter to deploy nodes into.
   datacenter: ""
+
+  # Username for vSphere API
+  username: ""
+
+  # Password for vSphere API
+  password: ""
 
   # Name of the default datastore for node disk storage.
   datastore: ""
@@ -68,7 +69,14 @@ vcenter:
   server: ""
 
   # TLS thumbprint of the VSphere API.
+  # openssl s_client -connect https://foo.example.com < /dev/null 2>/dev/null | openssl x509 -fingerprint -noout -in /dev/stdin
   thumbprint: ""
+
+  # Category name in VSphere for topology.kubernetes.io/region label
+  region: ""
+
+  # Category name in VSphere for topology.kubernetes.io/zone label
+  zone: ""
 
 proxy:  # (Optional) Defines HTTP proxy environment variables.
   secretName: ""
@@ -140,17 +148,6 @@ nodeClasses:
     # Defaults to empty map
     # <map[string]string>
     # customVMXKeys: {}
-
-    # Datacenter is the name or inventory path of the datacenter in which the
-    # virtual machine is created/located. Defaults to * which selects the default
-    # datacenter.
-    # <string>
-    # datacenter: ""
-
-    # Datastore is the name or inventory path of the datastore in which the
-    # virtual machine is created/located.
-    # <string>
-    # datastore: ""
 
     # DiskGiB is the size of a virtual machine's disk, in GiB. Defaults to the
     # eponymous property value in the template from which the virtual machine is
@@ -255,11 +252,6 @@ nodeClasses:
     # <string>
     # resourcePool: ""
 
-    # Server is the IP address or FQDN of the vSphere server on which the virtual
-    # machine is created/located.
-    # <string>
-    # server: ""
-
     # Snapshot is the name of the snapshot from which to create a linked clone.
     # This field is ignored if LinkedClone is not enabled. Defaults to the
     # source's current snapshot.
@@ -279,10 +271,3 @@ nodeClasses:
     # virtual machine.
     # <string> -required-
     template: ""
-
-    # Thumbprint is the colon-separated SHA-1 checksum of the given vCenter
-    # server's host certificate When this is set to empty, this VirtualMachine
-    # would be created without TLS certificate validation of the communication
-    # between Cluster API Provider vSphere and the VMware vCenter server.
-    # <string>
-    # thumbprint: ""

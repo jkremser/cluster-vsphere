@@ -24,7 +24,11 @@ Here we are generating a hash suffix to trigger upgrade when only it is necessar
 using only the parameters used in vspheredmachinetemplate.yaml.
 */}}
 {{- define "mtSpec" -}}
-{{- toYaml .currentClass }}
+datacenter: {{ $.vcenter.datacenter }}
+datastore: {{ $.vcenter.datastore }}
+server: {{ $.vcenter.server }}
+thumbprint: {{ $.vcenter.thumbprint }}
+{{ toYaml .currentClass }}
 {{- end -}}
 
 {{- define "mtRevision" -}}
@@ -48,9 +52,11 @@ application.giantswarm.io/team: {{ index .Chart.Annotations "application.giantsw
 {{- end -}}
 
 {{/*
-Common labels.
+Common labels with kubernetes version
+https://github.com/giantswarm/giantswarm/issues/22441
 */}}
 {{- define "labels.common" -}}
+{{- include "labels.selector" . }}
 app.kubernetes.io/version: {{ $.Chart.Version | quote }}
 helm.sh/chart: {{ include "chart" . | quote }}
 {{- end -}}
@@ -211,4 +217,8 @@ To enforce upgrades, a version suffix is appended to secret name.
 {{- define "registrySecretName" -}}
 {{- $secretSuffix := include "registrySecretContent" . | b64enc | quote | sha1sum | trunc 8 }}
 {{- include "resource.default.name" $ }}-registry-configuration-{{$secretSuffix}}
+{{- end -}}
+
+{{- define "credentialSecretName" -}}
+{{- include "resource.default.name" $ }}-credentials
 {{- end -}}

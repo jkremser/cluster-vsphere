@@ -6,14 +6,14 @@ sources:
   - https://github.com/giantswarm/cluster-vsphere
 description: "A helm chart for creating Cluster API clusters with the vSphere provider (CAPV)."
 keywords:
-- capv
-- vsphere
-- vmware
+  - capv
+  - vsphere
+  - vmware
 annotations:
   application.giantswarm.io/team: rocket
 maintainers:
-- name: Team Rocket
-  email: team-rocket@giantswarm.io
+  - name: Team Rocket
+    email: team-rocket@giantswarm.io
 restrictions:
   compatibleProviders:
     - vsphere

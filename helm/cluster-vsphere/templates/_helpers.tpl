@@ -164,7 +164,7 @@ mount containerd configuration for registry configuration in nodes.
 {{- define "registryFiles" -}}
 {{- if and .Values.connectivity .Values.connectivity.containerRegistries -}}
 - path: /etc/containerd/conf.d/registry-config.toml
- permissions: "0600"
+  permissions: "0600"
   contentFrom:
     secret:
       name: {{ include "registrySecretName" $ }}

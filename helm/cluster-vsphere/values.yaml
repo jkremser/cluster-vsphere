@@ -5,6 +5,7 @@ controllerManager:
   featureGates: "ExpandPersistentVolumes=true,TTLAfterFinished=true"
 
 clusterDescription: ""  # Cluster description used in metadata.
+organization: ""  # The organization which owns this cluster.
 
 servicePriority: "highest"
 clusterLabels: {}
@@ -94,12 +95,6 @@ oidc:
 cluster:
   # Kubernetes version to deploy. Must match the version available in the image defined at template
   kubernetesVersion: ""
-
-  # Cluster name; used as a base for names of all cluster resources.
-  name: ""
-
-  # The organization which owns this cluster.
-  organization: ""
 
   # enable encryption at REST feature of API server
   enableEncryptionProvider: true

@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Bump `cloud-provider-vsphere` version to `1.3.2`.
+- Use release name instead of `cluster.name`.
+- Move `organization` to root level for uniformity.
 
 ## [0.2.1] - 2023-03-21
 

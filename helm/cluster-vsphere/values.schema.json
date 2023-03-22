@@ -6,15 +6,6 @@
                 "kubernetesVersion": {
                     "title": "Kubernetes version",
                     "type": "string"
-                },
-                "name": {
-                    "description": "Unique identifier, cannot be changed after creation.",
-                    "title": "Cluster name",
-                    "type": "string"
-                },
-                "organization": {
-                    "title": "Organization",
-                    "type": "string"
                 }
             },
             "title": "Cluster",
@@ -124,6 +115,10 @@
             },
             "title": "Network",
             "type": "object"
+        },
+        "organization": {
+            "title": "Organization",
+            "type": "string"
         },
         "template": {
             "description": "Provisioning options for node templates.",

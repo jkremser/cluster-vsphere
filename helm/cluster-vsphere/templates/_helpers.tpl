@@ -65,7 +65,7 @@ helm.sh/chart: {{ include "chart" . | quote }}
 Create a prefix for all resource names.
 */}}
 {{- define "resource.default.name" -}}
-{{ .Values.cluster.name }}
+{{ .Release.Name }}
 {{- end -}}
 
 {{- define "securityContext.runAsUser" -}}

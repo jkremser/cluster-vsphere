@@ -123,8 +123,6 @@ spec:
                 value: {{ .Values.network.controlPlaneEndpoint.host }}
               - name: port
                 value: "6443"
-              - name: svc_enable
-                value: "true"
               - name: cp_enable
                 value: "true"
               - name: vip_cidr

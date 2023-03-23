@@ -11,4 +11,4 @@ metadata:
     {{- include "labels.common" . | nindent 4 }}
 spec:
   interval: 10m
-  url: https://kube-vip.io/helm-charts
+  url: https://kube-vip.github.io/helm-charts

@@ -79,7 +79,7 @@ spec:
             - "/bin/sh"
             - "-xc"
             - |
-              kubectl create configmap -n kube-system kubevip --from-literal range-global={{ .Values.network.loadBalancer.vipStartIP }}-{{ .Values.network.loadBalancer.vipEndIP }}
+              kubectl create configmap -n kube-system kubevip --from-literal range-global={{ .Values.network.loadBalancer.vipStartIP }}-{{ .Values.network.loadBalancer.vipEndIP }} --dry-run=client -oyaml | kubectl apply -f -
               exit 0
           securityContext:
             readOnlyRootFilesystem: true

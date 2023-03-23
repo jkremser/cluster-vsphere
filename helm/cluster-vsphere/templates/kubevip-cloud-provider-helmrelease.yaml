@@ -1,11 +1,8 @@
-# kube vip can be configured with svc_enable=true to effectively function as simple load balancer
-# it assumes a cloud controler manager to be running in the cluster that will be responsible for assigning the IP
-# for a Services with type LoadBalancer. This should be done by CNI. If there isn't any we can use their own:
 # kubectl apply -f https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml 
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: {{ include "resource.default.name" $ }}-kubevip-lb
+  name: {{ include "resource.default.name" $ }}-kubevip-cloud-provider
   namespace: {{ $.Release.Namespace }}
   annotations:
     cluster.giantswarm.io/description: "{{ .Values.clusterDescription }}"
@@ -14,12 +11,12 @@ metadata:
     giantswarm.io/service-priority: "{{ .Values.servicePriority }}"
     {{- include "labels.common" . | nindent 4 }}
 spec:
-  releaseName: kubevip-lb
+  releaseName: kubevip-cloud-provider
   targetNamespace: kube-system
   storageNamespace: kube-system
   chart:
     spec:
-      chart: kube-vip
+      chart: kube-vip-cloud-provider
       version: 0.4.3
       sourceRef:
         kind: HelmRepository
@@ -32,9 +29,5 @@ spec:
     remediation:
       retries: 30
   # Default values
-  # https://github.com/kube-vip/helm-charts/blob/main/charts/kube-vip/values.yaml
+  # https://github.com/kube-vip/helm-charts/blob/kube-vip-0.4.3/charts/kube-vip-cloud-provider/values.yaml
   values:
-    config:
-      vip_interface: eth0
-      vip_address: {{ .Values.network.controlPlaneEndpoint.host }}
-      svc_enable: true

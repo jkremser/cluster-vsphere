@@ -119,22 +119,14 @@ spec:
                 value: "true"
               - name: vip_leaderelection
                 value: "true"
-              - name: vip_address
+              - name: address
                 value: {{ .Values.network.controlPlaneEndpoint.host }}
-              - name: port
-                value: "6443"
-              - name: vip_cidr
-                value: "32"
+              - name: svc_enable
+                value: true
               - name: vip_loglevel
                 value: "5"
               - name: vip_interface
                 value: eth0
-              - name: vip_leaseduration
-                value: "15"
-              - name: vip_renewdeadline
-                value: "10"
-              - name: vip_retryperiod
-                value: "2"
               image: ghcr.io/kube-vip/kube-vip:v0.4.0
               imagePullPolicy: IfNotPresent
               name: kube-vip

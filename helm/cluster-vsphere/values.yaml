@@ -17,6 +17,9 @@ network:
   controlPlaneEndpoint:
     host: ""  # [string] Manually select an IP for kube API. "" for auto selection from pool.
     port: ""  # [int] Port to use. "" defaults to 6443.
+  loadBalancer:
+    vipStartIP: 10.10.222.220
+    vipEndIP: 10.10.222.225
 
 
 controlPlane:  # Must match nodeClasses' fields except "name" and must contain "replicas".
@@ -108,6 +111,7 @@ kubectlImage:
   tag: 1.23.5
 
 connectivity:
+
   containerRegistries: {}
 #   docker.io:
 #   - endpoint: "registry-1.docker.io"

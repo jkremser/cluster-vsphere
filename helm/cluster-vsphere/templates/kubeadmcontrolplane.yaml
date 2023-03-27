@@ -70,6 +70,8 @@ spec:
       imageRepository: {{ .Values.controlPlane.image.repository }}
       {{- include "sshUsers" . | nindent 4 }}
     initConfiguration:
+      skipPhases:
+        - addon/kube-proxy
       patches:
         directory: "/tmp/kubeadm/patches"
       nodeRegistration:
@@ -88,7 +90,6 @@ spec:
       {{- if $.Values.proxy.enabled }}
       {{- include "containerdProxyConfig" . | nindent 6}}
       {{- end }}
-      {{- include "kubeProxyFiles" . | nindent 6 }}
       {{- include "registryFiles" . | nindent 6 }}
       {{- range $kubeadmPatch, $_ :=  .Files.Glob  "files/etc/patches/**" }}
       - path: {{ (printf "/tmp/kubeadm/patches/%s" (base $kubeadmPatch)) }}
@@ -152,7 +153,6 @@ spec:
         path: /etc/kubernetes/manifests/kube-vip.yaml
     preKubeadmCommands:
       # - bash /tmp/kubeadm/patches/kube-apiserver-patch.sh {{ .Values.controlPlane.resourceRatio }}
-      # - bash /run/kubeadm/gs-kube-proxy-patch.sh
       {{- include "hostsAndHostname" . | nindent 6 }}
       {{- if $.Values.proxy.enabled }}
       - systemctl daemon-reload

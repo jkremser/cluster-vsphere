@@ -126,17 +126,6 @@ postKubeadmCommands:
 - echo  '{{ "{{" }} ds.meta_data.hostname {{ "}}" }}'  >/etc/hostname
 {{- end -}}
 
-{{- define "kubeProxyFiles" }}
-- path: /run/kubeadm/gs-kube-proxy-config.yaml
-  permissions: "0600"
-  content: |
-    {{- .Files.Get "files/etc/gs-kube-proxy-config.yaml" | nindent 4 }}
-- path: /run/kubeadm/gs-kube-proxy-patch.sh
-  permissions: "0700"
-  content: |
-    {{- .Files.Get "files/etc/gs-kube-proxy-patch.sh" | nindent 4 }}
-{{- end -}}
-
 {{- define "kubeadmConfigTemplateRevision" -}}
 {{- $inputs := (dict
   "data" (include "kubeadmConfigTemplateSpec" .) ) }}

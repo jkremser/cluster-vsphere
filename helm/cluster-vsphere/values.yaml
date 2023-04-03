@@ -111,7 +111,6 @@ kubectlImage:
   tag: 1.23.5
 
 connectivity:
-
   containerRegistries: {}
 #   docker.io:
 #   - endpoint: "registry-1.docker.io"

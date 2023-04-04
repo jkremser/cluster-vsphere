@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `default-test` HelmRepository (catalog) for debugging.
+
 ### Changed
 
 - Bump `cloud-provider-vsphere` version to `1.3.3`.
+
+### Removed
+
+- Remove unnecessary labels from HelmRepository CR.
 
 ## [0.3.0] - 2023-03-27
 

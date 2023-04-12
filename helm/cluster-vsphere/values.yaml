@@ -14,6 +14,7 @@ network:
   - "192.168.0.0/16"
   servicesCidrBlocks:
   - "192.168.1.0/16"
+  loadBalancersCidrBlocks: []
   controlPlaneEndpoint:
     host: ""  # [string] Manually select an IP for kube API. "" for auto selection from pool.
     port: ""  # [int] Port to use. "" defaults to 6443.

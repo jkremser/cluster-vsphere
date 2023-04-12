@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `MachineHealthCheck` for worker nodes. 
+- Add `MachineHealthCheck` for worker nodes.
+- Add `loadBalancersCidrBlocks` parameter that is used by kube-vip for `LoadBalancer` services.
 
 ## [0.3.1] - 2023-04-05
 

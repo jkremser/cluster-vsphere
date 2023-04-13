@@ -23,10 +23,11 @@ spec:
   kubeConfig:
     secretRef:
       name: {{ include "resource.default.name" $ }}-kubeconfig
-  interval: 5m
+  interval: 1m
   install:
+    disableWait: true # DisableWait disables the waiting for resources to be ready after a Helm install has been performed.
     remediation:
-      retries: 30
+      retries: -1 # a negative integer equals to unlimited retries
   # Default values
   # https://github.com/giantswarm/cilium-app/blob/main/helm/cilium/values.yaml
   values:

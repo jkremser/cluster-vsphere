@@ -11,6 +11,38 @@
             "title": "Cluster",
             "type": "object"
         },
+        "apiServer": {
+            "properties": {
+                "certSANs": {
+                    "default": [],
+                    "description": "Alternative names to encode in the API server's certificate.",
+                    "items": {
+                        "title": "SAN",
+                        "type": "string"
+                    },
+                    "title": "Subject alternative names (SAN)",
+                    "type": "array"
+                },
+                "enableAdmissionPlugins": {
+                    "default": "NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,PersistentVolumeClaimResize,DefaultStorageClass,Priority,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook",
+                    "description": "Comma-separated list of admission plugins to enable.",
+                    "title": "Admission plugins",
+                    "type": "string"
+                },
+                "featureGates": {
+                    "default": "TTLAfterFinished=true",
+                    "description": "Enabled feature gates, as a comma-separated list.",
+                    "title": "Feature gates",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "enableAdmissionPlugins",
+                "featureGates"
+            ],
+            "title": "Kubernetes API server",
+            "type": "object"
+        },
         "controlPlane": {
             "properties": {
                 "endpoint": {

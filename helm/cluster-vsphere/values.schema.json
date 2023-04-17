@@ -132,19 +132,48 @@
         },
         "network": {
             "properties": {
-                "podsCidr": {
+                "loadBalancersCidrBlocks": {
+                    "items": {
+                        "description": "IPv4 address range for LoadBalancer IPs, in CIDR notation.",
+                        "examples": [
+                            "10.10.10.0/24"
+                        ],
+                        "title": "Load Balancer subnet",
+                        "type": "string"
+                    },
+                    "title": "Load Balancer subnets",
+                    "type": "array"
+                },
+                "podsCidrBlocks": {
                     "items": {
                         "description": "IPv4 address range for pods, in CIDR notation.",
                         "examples": [
                             "192.168.0.0/16"
                         ],
-                        "title": "Pod sbunet",
+                        "title": "Pod subnet",
                         "type": "string"
                     },
                     "title": "Pod subnets",
                     "type": "array"
+                },
+                "servicesCidrBlocks": {
+                    "items": {
+                        "description": "IPv4 address range for k8s services, in CIDR notation.",
+                        "examples": [
+                            "192.168.1.0/16"
+                        ],
+                        "title": "Service subnet",
+                        "type": "string"
+                    },
+                    "title": "Service subnets",
+                    "type": "array"
                 }
             },
+            "required": [
+                "loadBalancersCidrBlocks",
+                "podsCidrBlocks",
+                "servicesCidrBlocks"
+            ],
             "title": "Network",
             "type": "object"
         },

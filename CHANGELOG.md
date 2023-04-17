@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Improve schema and ci values.
+
 ### Added
 
 - Add `MachineHealthCheck` for worker nodes.

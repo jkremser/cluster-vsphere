@@ -76,6 +76,7 @@ spec:
       {{- include "sshUsers" . | nindent 4 }}
     initConfiguration:
       skipPhases:
+        - addon/coredns
         - addon/kube-proxy
       patches:
         directory: "/tmp/kubeadm/patches"

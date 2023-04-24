@@ -7,20 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- Improve schema and ci values.
-- :boom: **Breaking:** Change default pod network and service network to 10.244.0.0/16 and 10.96.0.0/16.
-
 ### Added
 
 - Add `MachineHealthCheck` for worker nodes.
 - Add `loadBalancersCidrBlocks` parameter that is used by kube-vip for `LoadBalancer` services.
 - Add `apiServer.certSANs` option.
 
+### Changed
+
+- Improve schema and ci values.
+- :boom: **Breaking:** Change default pod network and service network to 10.244.0.0/16 and 10.96.0.0/16.
+- :boom: **Breaking:** Install CoreDNS (`coredns-app`) using `HelmRelease` CR and stop deploying it with `cluster-shared` resource set.
+
 ### Fixed
 
 - Set `.network.servicesCidrBlocks` value in Cluster CR.
+
+### Removed
+
+- Remove `cluster-shared` dependency.
 
 ## [0.3.1] - 2023-04-05
 

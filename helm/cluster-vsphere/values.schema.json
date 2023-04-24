@@ -153,6 +153,8 @@
                         "title": "Pod subnet",
                         "type": "string"
                     },
+                    "minItems": 1,
+                    "maxItems": 1,
                     "title": "Pod subnets",
                     "type": "array"
                 },
@@ -165,6 +167,8 @@
                         "title": "Service subnet",
                         "type": "string"
                     },
+                    "minItems": 1,
+                    "maxItems": 1,
                     "title": "Service subnets",
                     "type": "array"
                 }

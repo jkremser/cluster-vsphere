@@ -17,7 +17,3 @@ maintainers:
 restrictions:
   compatibleProviders:
     - vsphere
-dependencies:
-  - name: cluster-shared
-    version: "0.6.3"
-    repository: "https://giantswarm.github.io/cluster-catalog"

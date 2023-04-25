@@ -159,6 +159,7 @@ spec:
         path: /etc/kubernetes/manifests/kube-vip.yaml
     preKubeadmCommands:
       # - bash /tmp/kubeadm/patches/kube-apiserver-patch.sh {{ .Values.controlPlane.resourceRatio }}
+      - /bin/test ! -d /var/lib/kubelet && (/bin/mkdir -p /var/lib/kubelet && /bin/chmod 0750 /var/lib/kubelet)
       {{- include "hostsAndHostname" . | nindent 6 }}
       {{- if $.Values.proxy.enabled }}
       - systemctl daemon-reload

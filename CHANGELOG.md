@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Set `/var/lib/kubelet` permissions to `0750` to fix `node-exporter` issue.
+
 ## [0.4.0] - 2023-04-24
 
 ### Added

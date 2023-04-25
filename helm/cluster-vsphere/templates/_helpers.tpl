@@ -109,6 +109,7 @@ files:
     {{- include "containerdProxyConfig" . | nindent 2}}
   {{- end }}
 preKubeadmCommands:
+- /bin/test ! -d /var/lib/kubelet && (/bin/mkdir -p /var/lib/kubelet && /bin/chmod 0750 /var/lib/kubelet)
   {{- include "hostsAndHostname" . }}
   {{- if $.Values.proxy.enabled }}
 - systemctl daemon-reload

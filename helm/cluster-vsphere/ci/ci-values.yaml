@@ -4,8 +4,7 @@ organization: "giantswarm"
 
 cluster:
   name: test
-  kubernetesVersion: "v1.22.5+vmware.1"
-  # kubernetesVersion: "v1.20.10"
+  kubernetesVersion: "v1.24.11"
   enableEncryptionProvider: false
 
 vcenter:
@@ -21,7 +20,7 @@ vcenter:
 controlPlane:
   replicas: 1
   machineTemplate:
-    template: "ubuntu-2004-kube-v1.22.5+vmware.1"
+    template: "ubuntu-2004-kube-v1.24.11"
     cloneMode: "linkedClone"
     diskGiB: 25
     numCPUs: 2
@@ -45,7 +44,7 @@ network:
 
 nodeClasses:
   default:
-    template: "ubuntu-2004-kube-v1.22.5+vmware.1"
+    template: "ubuntu-2004-kube-v1.24.11"
     cloneMode: "linkedClone"
     diskGiB: 25
     numCPUs: 2

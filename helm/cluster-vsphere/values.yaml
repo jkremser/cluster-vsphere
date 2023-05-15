@@ -38,7 +38,7 @@ controlPlane:  # Must match nodeClasses' fields except "name" and must contain "
     imageRepository: projects.registry.vmware.com/tkg
     imageTag: v1.7.0_vmware.12
   image:
-    repository: projects.registry.vmware.com/tkg
+    repository: registry.k8s.io  # For older k8s image templates (v1.22.5+vmware.1) use projects.registry.vmware.com/tkg here.
   resourceRatio: 8  # Ratio between node resources and apiserver resource requests.
 
 nodePools:

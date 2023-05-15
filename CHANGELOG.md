@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Bumped default k8s version to `1.24`, this might be :boom: **Breaking:**
+- `.cluster.kubernetesVersion`: `v1.22.5+vmware.1` -> `v1.24.11`
+- default machine template `ubuntu-2004-kube-v1.22.5+vmware.1` -> `ubuntu-2004-kube-v1.24.11`
+- `.controlPlane.image.repository`: `projects.registry.vmware.com/tkg` -> `registry.k8s.io`
+
 ### Fixed
 
 - Set `/var/lib/kubelet` permissions to `0750` to fix `node-exporter` issue.

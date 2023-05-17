@@ -163,6 +163,13 @@ mount containerd configuration for registry configuration in nodes.
 {{- end -}}
 
 
+{{- define "auditLogFiles" -}}
+- path: /etc/kubernetes/policies/audit-policy.yaml
+  permissions: "0600"
+  encoding: base64
+  content: {{ $.Files.Get "files/etc/kubernetes/policies/audit-policy.yaml" | b64enc }}
+{{- end -}}
+
 {{/*
 Generate the content of /etc/containerd/conf.d/registry-config.toml in nodes
 for registry configuration

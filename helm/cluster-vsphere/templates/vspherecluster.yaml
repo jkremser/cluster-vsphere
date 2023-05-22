@@ -7,8 +7,8 @@ metadata:
     {{- include "labels.common" . | nindent 4 }}
 spec:
   controlPlaneEndpoint:
-    host: '{{ ((.Values.network).controlPlaneEndpoint).host }}'
-    port: {{ ((.Values.network).controlPlaneEndpoint).port | default 6443 }}
+    host: '{{ ((.Values.connectivity.network).controlPlaneEndpoint).host }}'
+    port: {{ ((.Values.connectivity.network).controlPlaneEndpoint).port | default 6443 }}
 
   identityRef:
     kind: Secret

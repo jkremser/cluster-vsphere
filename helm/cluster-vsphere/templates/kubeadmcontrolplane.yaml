@@ -141,7 +141,7 @@ spec:
               - name: vip_leaderelection
                 value: "true"
               - name: vip_address
-                value: {{ .Values.network.controlPlaneEndpoint.host }}
+                value: {{ .Values.connectivity.network.controlPlaneEndpoint.host }}
               - name: vip_interface
                 value: eth0
               - name: vip_leaseduration
@@ -181,10 +181,6 @@ spec:
       {{- end }}
     postKubeadmCommands:
       {{- include "sshPostKubeadmCommands" . | nindent 6 }}
-      {{- if $.Values.network.staticRoutes }}
-      # - systemctl daemon-reload
-      # - systemctl enable --now static-routes.service
-      {{- end }}
     useExperimentalRetryJoin: true
   machineTemplate:
     infrastructureRef:

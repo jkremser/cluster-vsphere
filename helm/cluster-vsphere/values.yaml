@@ -10,16 +10,6 @@ organization: ""  # The organization which owns this cluster.
 
 servicePriority: "highest"
 clusterLabels: {}
-network:
-  podsCidrBlocks:
-  - "10.244.0.0/16"
-  servicesCidrBlocks:
-  - "10.96.0.0/16"
-  loadBalancersCidrBlocks: []
-  controlPlaneEndpoint:
-    host: ""  # [string] Manually select an IP for kube API. "" for auto selection from pool.
-    port: ""  # [int] Port to use. "" defaults to 6443.
-
 
 controlPlane:  # Must match nodeClasses' fields except "name" and must contain "replicas".
   replicas: 1  # Number of control plane instances to create (odd number).
@@ -107,6 +97,19 @@ kubectlImage:
   tag: 1.23.5
 
 connectivity:
+  network:
+    controlPlaneEndpoint:
+      host: ""  # [string] Manually select an IP for kube API. "" for auto selection from pool.
+      port: ""  # [int] Port to use. "" defaults to 6443.
+    loadBalancers:
+      cidrBlocks: []
+    pods:
+      cidrBlocks:
+      - "10.244.0.0/16"
+    services:
+      cidrBlocks:
+      - "172.31.0.0/16"
+
   containerRegistries: {}
 #   docker.io:
 #   - endpoint: "registry-1.docker.io"

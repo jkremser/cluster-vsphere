@@ -51,4 +51,4 @@ spec:
         zone: "{{ .Values.vcenter.zone }}"
         thumbprint: "{{ .Values.vcenter.thumbprint }}"
     kube-vip-cloud-provider:
-      cidrGlobal: '{{ join "," .Values.network.loadBalancersCidrBlocks }}'
+      cidrGlobal: '{{ join "," .Values.connectivity.network.loadBalancers.cidrBlocks }}'

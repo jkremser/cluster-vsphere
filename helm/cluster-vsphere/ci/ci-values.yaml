@@ -31,16 +31,15 @@ controlPlane:
       - networkName: 'grasshopper-capv'
         dhcp4: true
 
-network:
-  podsCidrBlocks:
-  - "192.168.0.0/16"
-  servicesCidrBlocks:
-  - "192.168.1.0/16"
-  controlPlaneEndpoint:
-    host: "10.10.222.241"  # [string] Manually select an IP for kube API. "" for auto selection from pool.
-    port: "6443"  # [int] Port to use. "" defaults to 6443.
-  loadBalancersCidrBlocks:
-  - "10.10.222.224/30"
+connectivity:
+  network:
+    controlPlaneEndpoint:
+      host: "10.10.222.241"
+      port: 6443
+    loadBalancers:
+      cidrBlocks:
+      - "10.10.222.224/30"
+
 
 nodeClasses:
   default:

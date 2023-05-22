@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - default machine template `ubuntu-2004-kube-v1.22.5+vmware.1` -> `ubuntu-2004-kube-v1.24.11`
 - `.controlPlane.image.repository`: `projects.registry.vmware.com/tkg` -> `registry.k8s.io`
 - Add audilog configuration.
+- :boom: **Breaking:** Refactor api for network parameters to apply the standard interface for all providers.
 
 ### Fixed
 

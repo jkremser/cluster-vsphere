@@ -1,4 +1,18 @@
 {
+    "$defs": {
+        "cidrBlocks": {
+            "items": {
+                "description": "IPv4 address range, in CIDR notation.",
+                 "examples": [
+                     "10.244.0.0/16"
+                 ],
+                 "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 1,
+            "type": "array"
+        }
+    },
     "$schema": "http://json-schema.org/schema#",
     "properties": {
         "cluster": {
@@ -45,23 +59,6 @@
         },
         "controlPlane": {
             "properties": {
-                "endpoint": {
-                    "description": "Kubernetes API configuration.",
-                    "properties": {
-                        "host": {
-                            "title": "Host",
-                            "description": "Floating IP for access to the Kubernetes API.",
-                            "type": "string"
-                        },
-                        "port": {
-                            "title": "Port number",
-                            "description": "Port for access to the Kubernetes API.",
-                            "type": "integer"
-                        }
-                    },
-                    "title": "Endpoint",
-                    "type": "object"
-                },
                 "etcd": {
                     "properties": {
                         "imageRepository": {
@@ -82,6 +79,84 @@
                 }
             },
             "title": "Control plane",
+            "type": "object"
+        },
+        "connectivity": {
+            "properties": {
+                "network": {
+                    "properties": {
+                        "controlPlaneEndpoint": {
+                            "description": "Kubernetes API configuration.",
+                            "properties": {
+                                "host": {
+                                    "title": "Host",
+                                    "description": "IP for access to the Kubernetes API.",
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "title": "Port number",
+                                    "description": "Port for access to the Kubernetes API.",
+                                    "type": "integer"
+                                }
+                            },
+                            "title": "Endpoint",
+                            "type": "object"
+                        },
+                        "pods": {
+                            "properties": {
+                                "cidrBlocks": {
+                                    "$ref": "#/$defs/cidrBlocks",
+                                    "default": "10.244.0.0/16",
+                                    "title": "Pod subnets"
+                                }
+                            },
+                            "required": [
+                                "cidrBlocks"
+                            ],
+                            "title": "Pods",
+                            "type": "object"
+                        },
+                        "services": {
+                            "properties": {
+                                "cidrBlocks": {
+                                    "$ref": "#/$defs/cidrBlocks",
+                                    "default": "172.31.0.0/16",
+                                    "title": "Service subnets"
+                                }
+                            },
+                            "required": [
+                                "cidrBlocks"
+                            ],
+                            "title": "Services",
+                            "type": "object"
+                        },
+                        "loadBalancers": {
+                            "properties": {
+                                "cidrBlocks": {
+                                    "$ref": "#/$defs/cidrBlocks",
+                                    "title": "Load Balancer subnets"
+                                }
+                            },
+                            "required": [
+                                "cidrBlocks"
+                            ],
+                            "title": "Load balancers",
+                            "type": "object"
+                        }
+                    },
+                    "required": [
+                        "pods",
+                        "services",
+                        "loadBalancers"
+                    ],
+                    "title": "Network",
+                    "type": "object"
+                }
+            },
+            "required": [
+                "network"
+            ],
+            "title": "Connectivity",
             "type": "object"
         },
         "kubeadm": {
@@ -128,57 +203,6 @@
                 }
             },
             "title": "Kubectl image",
-            "type": "object"
-        },
-        "network": {
-            "properties": {
-                "loadBalancersCidrBlocks": {
-                    "items": {
-                        "description": "IPv4 address range for LoadBalancer IPs, in CIDR notation.",
-                        "examples": [
-                            "10.10.10.0/24"
-                        ],
-                        "title": "Load Balancer subnet",
-                        "type": "string"
-                    },
-                    "title": "Load Balancer subnets",
-                    "type": "array"
-                },
-                "podsCidrBlocks": {
-                    "items": {
-                        "description": "IPv4 address range for pods, in CIDR notation.",
-                        "examples": [
-                            "192.168.0.0/16"
-                        ],
-                        "title": "Pod subnet",
-                        "type": "string"
-                    },
-                    "minItems": 1,
-                    "maxItems": 1,
-                    "title": "Pod subnets",
-                    "type": "array"
-                },
-                "servicesCidrBlocks": {
-                    "items": {
-                        "description": "IPv4 address range for k8s services, in CIDR notation.",
-                        "examples": [
-                            "192.168.1.0/16"
-                        ],
-                        "title": "Service subnet",
-                        "type": "string"
-                    },
-                    "minItems": 1,
-                    "maxItems": 1,
-                    "title": "Service subnets",
-                    "type": "array"
-                }
-            },
-            "required": [
-                "loadBalancersCidrBlocks",
-                "podsCidrBlocks",
-                "servicesCidrBlocks"
-            ],
-            "title": "Network",
             "type": "object"
         },
         "organization": {

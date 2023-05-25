@@ -14,7 +14,7 @@ clusterLabels: {}
 controlPlane:  # Must match nodeClasses' fields except "name" and must contain "replicas".
   replicas: 1  # Number of control plane instances to create (odd number).
   machineTemplate:  # check .nodeClasses.default for docs
-    template: ""  # template used to create (or) upgrade control plane nodes.
+    template: "ubuntu-2004-kube-v1.24.11"  # template used to create (or) upgrade control plane nodes.
     resourcePool: ""  # ResourcePool is the name or inventory path of the resource pool in which the virtual machine is created/located.
     memoryMiB: 8192
     network:
@@ -86,7 +86,7 @@ oidc:
 # Cluster-specific configuration
 cluster:
   # Kubernetes version to deploy. Must match the version available in the image defined at template
-  kubernetesVersion: ""
+  kubernetesVersion: "v1.24.11"
 
   # enable encryption at REST feature of API server
   enableEncryptionProvider: true
@@ -270,4 +270,4 @@ nodeClasses:
     # Template is the name or inventory path of the template used to clone the
     # virtual machine.
     # <string> -required-
-    template: ""
+    template: "ubuntu-2004-kube-v1.24.11"

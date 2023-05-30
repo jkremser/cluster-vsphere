@@ -4,6 +4,7 @@ metadata:
   name: {{ include "resource.default.name" $ }}
   namespace: {{ .Release.Namespace }}
   labels:
+    someFoo: someBar
     {{- include "labels.common" . | nindent 4 }}
 spec:
   controlPlaneEndpoint:

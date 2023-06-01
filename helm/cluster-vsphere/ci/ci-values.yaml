@@ -17,6 +17,9 @@ vcenter:
   thumbprint: "F7:CF:F9:E5:99:39:FF:C1:D7:14:F1:3F:8A:42:21:95:3B:A1:6E:16"
   region: "k8s-region"
   zone: "k8s-zone"
+  regionTag: "ionos-region"
+  computeCluster: "Cluster1"
+  autoConfigureTopology: true
 controlPlane:
   replicas: 1
   machineTemplate:

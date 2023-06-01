@@ -1,0 +1,57 @@
+{{- range $name, $value := (merge .Values.nodeClasses (dict "control-plane" .Values.controlPlane.machineTemplate)) }}
+{{- $c := (merge (dict "currentClass"  $value) $.Values) }}
+{{- if and ($value.failureDomain) ($.Values.vcenter.regionTag) }}
+{{- /*
+{{- $c | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
+*/ -}}
+---
+# Region -> ComputeCluster, Zone -> HostGroup
+# CAPV will create vm groups matching the host groups,
+# then create vm-host affinity rules between vmgroups and hostgroups,
+# add the CP node to the specific vm group, DRS will schedule the VM to the corresponding hostgroup.
+
+apiVersion: {{ include "infrastructureApiVersion" . }}
+kind: VSphereFailureDomain
+metadata:
+  name: {{ include "resource.default.name" $ }}-{{ $value.failureDomain }}-{{ include "mtRevision" $c }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "labels.common" $ | nindent 4 }}
+spec:
+  region:
+    name: {{ $.Values.vcenter.regionTag }}
+    type: ComputeCluster
+    tagCategory: {{ $.Values.vcenter.region }}
+    autoConfigure: {{ $.Values.vcenter.autoConfigureTopology }}
+  zone:
+    name: {{ $value.failureDomain }}
+    type: HostGroup
+    tagCategory: {{ $.Values.vcenter.zone }}
+    autoConfigure: {{ $.Values.vcenter.autoConfigureTopology }}
+  topology:
+    datacenter: {{ $value.datacenter | default $.Values.vcenter.datacenter }}
+    computeCluster: {{ $.Values.vcenter.computeCluster }}
+    hosts:
+      # host group needs to be precreated, vm group will be created by capv controller
+      # name of the host group is assumed to be the same as the name of the node class (default, control-plane, etc.)
+      vmGroupName: {{ include "resource.default.name" $ }}-{{ $value.failureDomain }}-{{ include "mtRevision" $c }}
+      hostGroupName: {{ $name }}
+    datastore: {{ $value.datastore | default $.Values.vcenter.datastore }}
+    networks:
+{{- range $value.network.devices }}
+    - {{ .networkName }}
+{{- end }}
+---
+apiVersion: {{ include "infrastructureApiVersion" . }}
+kind: VSphereDeploymentZone
+metadata:
+ name: {{ include "resource.default.name" $ }}-{{ $value.failureDomain }}-{{ include "mtRevision" $c }}
+spec:
+ server: {{ $.Values.vcenter.server }}
+ failureDomain: {{ include "resource.default.name" $ }}-{{ $value.failureDomain }}-{{ include "mtRevision" $c }}
+ placementConstraint:
+   resourcePool: {{ $value.resourcePool }}
+   folder: {{ $value.folder }}
+---
+{{- end }}
+{{- end }}

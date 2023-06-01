@@ -17,6 +17,7 @@ controlPlane:  # Must match nodeClasses' fields except "name" and must contain "
     template: "ubuntu-2004-kube-v1.24.11"  # template used to create (or) upgrade control plane nodes.
     resourcePool: ""  # ResourcePool is the name or inventory path of the resource pool in which the virtual machine is created/located.
     memoryMiB: 8192
+    failureDomain: ""
     network:
       devices:
       - dhcp4: true
@@ -67,6 +68,12 @@ vcenter:
 
   # Category name in VSphere for topology.kubernetes.io/region label
   region: ""
+
+  # Tag name in VSphere for topology.kubernetes.io/region label (basically tag for region category)
+  regionTag: ""
+
+  # Used only when topology is on
+  computeCluster: ""
 
   # Category name in VSphere for topology.kubernetes.io/zone label
   zone: ""

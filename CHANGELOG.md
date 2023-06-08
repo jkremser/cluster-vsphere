@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `connectivity.network.controlPlaneEndpoint.host` to `certSANs` list.
+- Add `"helm.sh/resource-policy": "keep"` annotation to VSphereCluster,
+  MachineDeployments and KubeadmControlPlane. The deletion of these resources
+  has to be done in certaion order and must be handled by the CAPI and CAPA controllers.
 
 ## [0.5.1] - 2023-06-07
 

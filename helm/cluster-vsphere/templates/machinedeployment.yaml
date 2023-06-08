@@ -7,6 +7,8 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "labels.common" $ | nindent 4 }}
+  annotations:
+    {{- include "helm-keep" $ | nindent 4 }}
 spec:
   clusterName: {{ include "resource.default.name" $ }}
   replicas: {{ $value.replicas }}

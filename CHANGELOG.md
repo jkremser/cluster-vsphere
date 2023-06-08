@@ -7,13 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `connectivity.network.controlPlaneEndpoint.host` to `certSANs` list.
+
 ## [0.5.1] - 2023-06-07
+
+### Changed
+
+- Bump the version of coredns-app to `1.16.0`
 
 ## [0.5.0] - 2023-05-22
 
 ### Changed
 
-- Bump the version of coredns-app to `1.16.0`
 - :boom: **Breaking:** Stop deploying default network policies with the `cilium-app`. This means the cluster will be more locked down and all network traffic is blocked by default. Can be disabled with `network.allowAllEgress` setting. Requires `default-apps-vsphere@v0.9.2`.
 - Bumped default k8s version to `1.24`, this might be :boom: **Breaking:**
 - `.cluster.kubernetesVersion`: `v1.22.5+vmware.1` -> `v1.24.11`

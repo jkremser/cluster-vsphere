@@ -1,8 +1,10 @@
 {
+    "$schema": "http://json-schema.org/schema#",
     "$defs": {
         "cidrBlocks": {
             "items": {
                 "description": "IPv4 address range, in CIDR notation.",
+                "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(/([0-9]|[1,2][0-9]|[3][0-2]))?$",
                  "examples": [
                      "10.244.0.0/16"
                  ],
@@ -13,7 +15,6 @@
             "type": "array"
         }
     },
-    "$schema": "http://json-schema.org/schema#",
     "properties": {
         "cluster": {
             "properties": {
@@ -102,6 +103,13 @@
                                     "title": "Port number",
                                     "description": "Port for access to the Kubernetes API.",
                                     "type": "integer"
+                                },
+                                "ipPoolName": {
+                                    "title": "Ip Pool Name",
+                                    "description": "Ip for control plane will be drawn from this InClusterIPPool resource.",
+                                    "type": "string",
+                                    "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+                                    "default": "wc-cp-ips"
                                 }
                             },
                             "title": "Endpoint",

@@ -73,6 +73,7 @@ spec:
           bind-address: "0.0.0.0"
           cloud-provider: external
           enable-hostpath-provisioner: "true"
+          terminated-pod-gc-threshold: "125"
           feature-gates: {{ .Values.controllerManager.featureGates }}
           logtostderr: "true"
           profiling: "false"

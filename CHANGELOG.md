@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Set value for `controller-manager` `terminated-pod-gc-threshold` to `125` ( consistent with vintage ) 
+- Set value for `controller-manager` `terminated-pod-gc-threshold` to `125` ( consistent with vintage )
+- Bump `cloud-provider-vsphere` version to `1.5.0` 
 
 ## [0.6.0] - 2023-07-04
 

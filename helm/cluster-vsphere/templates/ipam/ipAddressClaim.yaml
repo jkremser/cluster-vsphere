@@ -8,6 +8,6 @@ metadata:
 spec:
   poolRef:
     apiGroup: ipam.cluster.x-k8s.io
-    kind: InClusterIPPool
+    kind: GlobalInClusterIPPool
     name: {{ .Values.connectivity.network.controlPlaneEndpoint.ipPoolName }}
 {{- end -}}

@@ -123,6 +123,12 @@ connectivity:
 #       auth: ""
 #       identitytoken: ""
 
+internal:
+  sandboxContainerImage:
+    name: giantswarm/pause
+    registry: quay.io
+    tag: "3.9"
+
 # Class definitions for worker node pools or controle planes. The "name" of the class is the key of the object. Example:
 nodeClasses:
   # Provisioning options for node templates.

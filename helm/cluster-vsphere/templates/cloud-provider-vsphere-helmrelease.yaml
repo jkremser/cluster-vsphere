@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: cloud-provider-vsphere
-      version: 1.4.0
+      version: 1.5.0
       sourceRef:
         kind: HelmRepository
         name: {{ include "resource.default.name" $ }}-default
@@ -27,7 +27,7 @@ spec:
   kubeConfig:
     secretRef:
       name: {{ include "resource.default.name" $ }}-kubeconfig
-  interval: 10m
+  interval: {{ ((.Values.helmReleases).cpi).interval | default "10m" }}
   install:
     remediation:
       retries: 30

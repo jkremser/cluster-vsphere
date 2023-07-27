@@ -1,0 +1,127 @@
+{{- if eq (include "isIpamEnabled" $) "true" -}}
+# Because IP for control plane of new workload cluster is not known at the time of cluster creation
+# we use a post-install/post-upgrade hook Job to assign the IP from IPAddress CR.
+# This IPAddress CR should be created by cluster-api-ipam-provider-in-cluster controller as a
+# response to creating the IPAddressClaim CR (the name of both is the same). 
+# The IP is set to:
+#   - vspherecluster.spec.controlPlaneEndpoint.host
+#   - static pod definition for kubevip (.spec.containers.env[vip_address])
+#   - kubeadmcontrolplane.spec.kubeadmConfigSpec.clusterConfiguration.apiServer.certSANs[0]
+#
+# In case of upgrade, the Cluster CR is first paused, then IP is assigned and then the cluster is unpaused
+#
+# every resource in this file has "helm.sh/hook-weight": "0"
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "resource.default.name" $ }}-pre-upgrade-pause-hook"
+  namespace: "{{ $.Release.Namespace }}"
+  labels:
+    {{- include "labels.common" $ | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "pre-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+    "helm.sh/hook-weight": "0"
+spec:
+  ttlSecondsAfterFinished: 86400 # 24h
+  template:
+    metadata:
+      name: "{{ include "resource.default.name" $ }}-update-values-hook"
+      namespace: "{{ $.Release.Namespace }}"
+      labels:
+        {{- include "labels.common" $ | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      serviceAccountName: "{{ include "resource.default.name" $ }}-update-values-hook"
+      securityContext:
+        runAsUser: {{ include "securityContext.runAsUser" $ }}
+        runAsGroup: {{ include "securityContext.runAsGroup" $ }}
+      containers:
+        - name: pre-upgrade-job
+          image: "{{ .Values.kubectlImage.registry }}/{{ .Values.kubectlImage.name }}:{{ .Values.kubectlImage.tag }}"
+          command:
+            - "/bin/sh"
+            - "-xc"
+            - |
+              kubectl patch cluster -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} --type=merge -p '{"spec":{"paused":true}}'
+          securityContext:
+            readOnlyRootFilesystem: true
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "10m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "resource.default.name" $ }}-update-values-hook"
+  namespace: "{{ $.Release.Namespace }}"
+  labels:
+    {{- include "labels.common" $ | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+    "helm.sh/hook-weight": "0"
+spec:
+  ttlSecondsAfterFinished: 86400 # 24h
+  template:
+    metadata:
+      name: "{{ include "resource.default.name" $ }}-update-values-hook"
+      namespace: "{{ $.Release.Namespace }}"
+      labels:
+        {{- include "labels.common" $ | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      serviceAccountName: "{{ include "resource.default.name" $ }}-update-values-hook"
+      securityContext:
+        runAsUser: {{ include "securityContext.runAsUser" $ }}
+        runAsGroup: {{ include "securityContext.runAsGroup" $ }}
+      containers:
+        - name: post-install-job
+          image: "{{ .Values.kubectlImage.registry }}/{{ .Values.kubectlImage.name }}:{{ .Values.kubectlImage.tag }}"
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |
+              set -o errexit
+              set -o pipefail
+              set -o nounset
+              new_ip=""
+              while [ -z "${new_ip}" ] ; do
+                echo "waiting for a free IP address.."
+                new_ip=$(kubectl get ipaddress -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} -o 'jsonpath={.spec.address}')
+                sleep 2
+              done
+              echo "Got the IP: ${new_ip}"
+              # patch the vspherecluster.spec.controlPlaneEndpoint.host
+              kubectl patch vspherecluster -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} --type=merge -p '{"spec":{"controlPlaneEndpoint":{"host": "'${new_ip}'"}}}'
+
+              # patch the kubeadmcontrolplane.spec.kubeadmConfigSpec.clusterConfiguration.apiServer.certSANs[0]
+              kubectl patch kubeadmcontrolplane -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} --type json \
+                -p '[{"op":"replace", "path":"/spec/kubeadmConfigSpec/clusterConfiguration/apiServer/certSANs/0", "value": "'${new_ip}'"}]'
+
+              # patch also the static pod for kube-vip
+              encoded=$(kubectl get secret -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }}-kubevip-pod -o jsonpath={.data.content} \
+                | base64 --decode \
+                | tr '\n' '\r' \
+                | sed -e "s/vip_address\\r[^$(printf '\r')]*/vip_address\\r      value: ${new_ip}/" \
+                | tr '\r' '\n' \
+                | base64 -w 0)
+              kubectl patch secret -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }}-kubevip-pod --type=merge -p '{"data": {"content": "'${encoded}'"}}'
+
+              echo "New IP has been assigned, upausing the Cluster '{{ include "resource.default.name" $ }}' resource.."
+              kubectl patch cluster -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} --type=merge -p '{"spec":{"paused":false}}'
+          securityContext:
+            readOnlyRootFilesystem: true
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "10m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
+---
+{{- end -}}

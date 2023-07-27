@@ -34,3 +34,4 @@ spec:
     kind: VSphereCluster
     name: {{ include "resource.default.name" $ }}
     namespace: {{ .Release.Namespace }}
+  paused: {{ include "isIpamEnabled" $ }}

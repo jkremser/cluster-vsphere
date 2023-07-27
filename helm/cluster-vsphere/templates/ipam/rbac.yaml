@@ -1,0 +1,68 @@
+{{- if eq (include "isIpamEnabled" $) "true" -}}
+# every resource in this file has "helm.sh/hook-weight": "-1" or "-2"
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "{{ include "resource.default.name" $ }}-update-values-hook"
+  namespace: "{{ $.Release.Namespace }}"
+  annotations:
+    "helm.sh/hook": "post-install,pre-upgrade,post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded,hook-failed"
+    "helm.sh/hook-weight": "-2"
+  labels:
+    {{- include "labels.common" $ | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: "{{ include "resource.default.name" $ }}-update-values-hook"
+  namespace: "{{ $.Release.Namespace }}"
+  annotations:
+    "helm.sh/hook": "post-install,pre-upgrade,post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded,hook-failed"
+    "helm.sh/hook-weight": "-2"
+  labels:
+    {{- include "labels.common" $ | nindent 4 }}
+rules:
+  - apiGroups: ["infrastructure.cluster.x-k8s.io"]
+    resources: ["vsphereclusters"]
+    resourceNames: ["{{ include "resource.default.name" $ }}"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["cluster.x-k8s.io"]
+    resources: ["clusters"]
+    resourceNames: ["{{ include "resource.default.name" $ }}"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["ipam.cluster.x-k8s.io"]
+    resources: ["ipaddresses"]
+    resourceNames: ["{{ include "resource.default.name" $ }}"]
+    verbs: ["get", "list"]
+  - apiGroups: ["controlplane.cluster.x-k8s.io"]
+    resources: ["kubeadmcontrolplanes"]
+    resourceNames: ["{{ include "resource.default.name" $ }}"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["{{ include "resource.default.name" $ }}-kubevip-pod"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: "{{ include "resource.default.name" $ }}-update-values-hook"
+  namespace: "{{ $.Release.Namespace }}"
+  annotations:
+    "helm.sh/hook": "post-install,pre-upgrade,post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded,hook-failed"
+    "helm.sh/hook-weight": "-1"
+  labels:
+    {{- include "labels.common" $ | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: "{{ include "resource.default.name" $ }}-update-values-hook"
+    namespace: "{{ $.Release.Namespace }}"
+roleRef:
+  kind: Role
+  name: "{{ include "resource.default.name" $ }}-update-values-hook"
+  apiGroup: rbac.authorization.k8s.io
+---
+{{- end -}}

@@ -100,8 +100,9 @@ connectivity:
   network:
     allowAllEgress: false
     controlPlaneEndpoint:
-      host: ""  # [string] Manually select an IP for kube API. "" for auto selection from pool.
-      port: ""  # [int] Port to use. "" defaults to 6443.
+      host: ""   # [string] Manually select an IP for kube API. "" for auto selection from the ipPoolName pool.
+      port: 6443
+      ipPoolName: "wc-cp-ips"  # [string] Ip for control plane will be drawn from this InClusterIPPool.
     loadBalancers:
       cidrBlocks: []
     pods:
@@ -121,6 +122,12 @@ connectivity:
 #     credentials:
 #       auth: ""
 #       identitytoken: ""
+
+internal:
+  sandboxContainerImage:
+    name: giantswarm/pause
+    registry: quay.io
+    tag: "3.9"
 
 # Class definitions for worker node pools or controle planes. The "name" of the class is the key of the object. Example:
 nodeClasses:

@@ -23,7 +23,7 @@ spec:
   kubeConfig:
     secretRef:
       name: {{ include "resource.default.name" $ }}-kubeconfig
-  interval: 5m
+  interval: {{ ((.Values.helmReleases).cilium).interval | default "5m" }}
   install:
     remediation:
       retries: 30

@@ -7,12 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Consolidate containerd `config.toml` into single file to address [#1737](https://github.com/giantswarm/roadmap/issues/1737)
+
 ### Added
 
-- Add `connectivity.network.controlPlaneEndpoint.host` to `certSANs` list.
 - Add `"helm.sh/resource-policy": "keep"` annotation to VSphereCluster,
   MachineDeployments and KubeadmControlPlane. The deletion of these resources
   has to be done in certaion order and must be handled by the CAPI and CAPA controllers.
+
+## [0.6.1] - 2023-07-13
+
+### Added
+
+- Add a way to customize the timeout in `HelmRelease.spec`.
+- Set value for `controller-manager` `terminated-pod-gc-threshold` to `125` ( consistent with vintage )
+- Bump `cloud-provider-vsphere` version to `1.5.0` 
+
+## [0.6.0] - 2023-07-04
+
+### Added
+
+- Add IPv4 addresses management (ipam) for WC's control planes.
+- Add `connectivity.network.controlPlaneEndpoint.host` to `certSANs` list.
+- Bind `kube-scheduler` metrics to 0.0.0.0.
 
 ## [0.5.1] - 2023-06-07
 
@@ -110,7 +129,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial chart implementation.
 
-[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/giantswarm/cluster-vsphere/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/giantswarm/cluster-vsphere/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/giantswarm/cluster-vsphere/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/giantswarm/cluster-vsphere/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/giantswarm/cluster-vsphere/compare/v0.3.1...v0.4.0

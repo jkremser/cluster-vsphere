@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `"helm.sh/resource-policy": "keep"` annotation to VSphereCluster,
   MachineDeployments and KubeadmControlPlane. The deletion of these resources
-  has to be done in certaion order and must be handled by the CAPI and CAPA controllers.
+  has to be done in certain order and must be handled by the CAPI and CAPV controllers.
 
 ## [0.6.1] - 2023-07-13
 

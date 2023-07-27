@@ -75,10 +75,6 @@ Create a prefix for all resource names.
 1000
 {{- end -}}
 
-{{- define "helm-keep" -}}
-"helm.sh/resource-policy": "keep"
-{{- end -}}
-
 {{- define "kubeletExtraArgs" -}}
 {{- .Files.Get "files/kubelet-args" -}}
 {{- end -}}

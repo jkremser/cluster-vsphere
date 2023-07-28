@@ -117,6 +117,7 @@ preKubeadmCommands:
   {{- end }}
 postKubeadmCommands:
 {{ include "sshPostKubeadmCommands" . }}
+- usermod -aG root nobody # required for node-exporter to access the host's filesystem
 {{- end -}}
 
 {{- define "hostsAndHostname" }}

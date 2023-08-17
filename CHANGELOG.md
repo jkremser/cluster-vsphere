@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Consolidate containerd `config.toml` into single file to address [#1737](https://github.com/giantswarm/roadmap/issues/1737)
 - Add host OS user `nobody` to `root` group to enable node-exporter's `filesystem` collector to access the host filesystem.
+- Bump `cilium` version to `0.10.0` 
 
 ## [0.6.1] - 2023-07-13
 

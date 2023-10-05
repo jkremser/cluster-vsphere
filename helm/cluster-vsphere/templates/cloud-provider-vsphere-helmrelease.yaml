@@ -17,10 +17,10 @@ spec:
   chart:
     spec:
       chart: cloud-provider-vsphere
-      version: 1.5.0
+      version: 1.5.0-48a19a71a2491785dc96c55f766c91d9545168ee
       sourceRef:
         kind: HelmRepository
-        name: {{ include "resource.default.name" $ }}-default
+        name: {{ include "resource.default.name" $ }}-default-test
   dependsOn:
     - name: {{ include "resource.default.name" $ }}-cilium
       namespace: {{ $.Release.Namespace }}

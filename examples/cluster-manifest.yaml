@@ -1,0 +1,128 @@
+kind: ConfigMap
+metadata:
+  labels:
+    app-operator.giantswarm.io/watching: "true"
+  name: testing-user-values
+  namespace: org-multi-project
+apiVersion: v1
+data:
+  values: |
+    baseDomain: test.gigantic.io
+    clusterDescription: "test cluster"
+    organization: "multi-project"
+    cluster:
+      kubernetesVersion: v1.24.11
+      enableEncryptionProvider: true
+    connectivity:
+      network:
+        allowAllEgress: true
+        controlPlaneEndpoint:
+          host: ""
+          ipPoolName: wc-cp-ips
+          port: 6443
+        loadBalancers:
+          cidrBlocks:
+          - "10.10.222.180/32"
+    controlPlane:
+      replicas: 3
+      catalog: "giantswarm"
+      machineTemplate:
+        network:
+          devices:
+          - networkName: 'LS-GS-CAPV'
+            dhcp4: true
+        cloneMode: "linkedClone"
+        diskGiB: 40
+        numCPUs: 4
+        memoryMiB: 8096
+        resourcePool: "giantswarm"
+        folder: "Giantswarm"
+        template: ubuntu-2004-kube-v1.24.11
+
+    nodeClasses:
+      default:
+        template: ubuntu-2004-kube-v1.24.11
+        cloneMode: "linkedClone"
+        diskGiB: 40
+        numCPUs: 6
+        memoryMiB: 10240
+        folder: "Giantswarm"
+        resourcePool: "giantswarm"
+        network:
+          devices:
+          - networkName: 'LS-GS-CAPV'
+            dhcp4: true
+    nodePools:
+      worker:
+        class: "default"
+        replicas: 2
+
+    oidc:
+      issuerUrl: https://dex.testing.test.gigantic.io
+      caFile: ""
+      clientId: "dex-k8s-authenticator"
+      usernameClaim: "email"
+      groupsClaim: "groups"
+      usernamePrefix: ""
+---
+apiVersion: application.giantswarm.io/v1alpha1
+kind: App
+metadata:
+  labels:
+    app-operator.giantswarm.io/version: 0.0.0
+    app.kubernetes.io/name: cluster-vsphere
+  name: testing
+  namespace: org-multi-project
+spec:
+  catalog: cluster
+  kubeConfig:
+    inCluster: true
+  name: cluster-vsphere
+  namespace: org-multi-project
+  userConfig:
+    configMap:
+      name: testing-user-values
+      namespace: org-multi-project
+    secret:
+      name: vsphere-credentials
+      namespace: org-multi-project
+  version: 0.7.1
+---
+apiVersion: v1
+data:
+  values: |
+    clusterName: testing
+    organization: giantswarm
+    managementCluster: guppy
+kind: ConfigMap
+metadata:
+  name: testing-default-apps-user-values
+  namespace: org-multi-project
+---
+apiVersion: application.giantswarm.io/v1alpha1
+kind: App
+metadata:
+  generation: 1
+  labels:
+    app-operator.giantswarm.io/version: 0.0.0
+    app.kubernetes.io/name: default-apps-vsphere
+    giantswarm.io/cluster: testing
+    giantswarm.io/managed-by: cluster
+  name: testing-default-apps
+  namespace: org-multi-project
+spec:
+  catalog: cluster
+  config:
+    configMap:
+      name: testing-cluster-values
+      namespace: org-multi-project
+  kubeConfig:
+    inCluster: true
+  name: default-apps-vsphere
+  namespace: org-multi-project
+  userConfig:
+    configMap:
+      name: testing-default-apps-user-values
+      namespace: org-multi-project
+  version: 0.11.1
+

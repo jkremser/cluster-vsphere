@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2023-10-31
+
 ### Added
 
 - Add IPv4 addresses management (ipam) for WC's `kube-vip-cloud-provider`. If the ipPool is specified, currently one IP is requested from it
@@ -141,7 +143,8 @@ at least 1 public IP is always needed for the ingress controller to be able to e
 
 - Initial chart implementation.
 
-[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/giantswarm/cluster-vsphere/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/giantswarm/cluster-vsphere/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/giantswarm/cluster-vsphere/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/giantswarm/cluster-vsphere/compare/v0.6.1...v0.6.2

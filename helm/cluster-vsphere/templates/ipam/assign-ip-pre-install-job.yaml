@@ -1,4 +1,4 @@
-{{- if eq (include "isIpamEnabled" $) "true" -}}
+{{- if (include "isIpamEnabled" $) -}}
 # Because IP for control plane of new workload cluster is not known at the time of cluster creation
 # we use a post-install/post-upgrade hook Job to assign the IP from IPAddress CR.
 # This IPAddress CR should be created by cluster-api-ipam-provider-in-cluster controller as a
@@ -8,7 +8,10 @@
 #   - static pod definition for kubevip (.spec.containers.env[vip_address])
 #   - kubeadmcontrolplane.spec.kubeadmConfigSpec.clusterConfiguration.apiServer.certSANs[0]
 #
-# In case of upgrade, the Cluster CR is first paused, then IP is assigned and then the cluster is unpaused
+# In case of upgrade, the Cluster CR is first paused, then IP is assigned and then the cluster is unpaused.
+# 
+# If `isIpamSvcLoadBalancerEnabled`, this job also allocates a new free IP for kubevip Service Load Balancer running in WC. 
+# This is passed as a config option in HelmRelease -> helm release needs to be suspended first, updated and resumed 
 #
 # every resource in this file has "helm.sh/hook-weight": "0"
 apiVersion: batch/v1
@@ -38,21 +41,14 @@ spec:
         runAsGroup: {{ include "securityContext.runAsGroup" $ }}
       containers:
         - name: pre-upgrade-job
-          image: "{{ .Values.kubectlImage.registry }}/{{ .Values.kubectlImage.name }}:{{ .Values.kubectlImage.tag }}"
+          {{- include "ipamJobContainerCommon" . | nindent 10 }}
           command:
-            - "/bin/sh"
+            - "/bin/bash"
             - "-xc"
-            - |
-              kubectl patch cluster -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} --type=merge -p '{"spec":{"paused":true}}'
-          securityContext:
-            readOnlyRootFilesystem: true
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "10m"
-            limits:
-              memory: "256Mi"
-              cpu: "100m"
+            - kubectl patch cluster -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} --type=merge -p '{"spec":{"paused":true}}'
+{{- if (include "isIpamSvcLoadBalancerEnabled" $) }}
+            - kubectl patch helmrelease -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }}-cloud-provider-vsphere --type=merge -p '{"spec":{"suspend":true}}'
+{{- end }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -79,9 +75,10 @@ spec:
       securityContext:
         runAsUser: {{ include "securityContext.runAsUser" $ }}
         runAsGroup: {{ include "securityContext.runAsGroup" $ }}
-      containers:
-        - name: post-install-job
-          image: "{{ .Values.kubectlImage.registry }}/{{ .Values.kubectlImage.name }}:{{ .Values.kubectlImage.tag }}"
+      initContainers:
+{{- if (include "isIpamControlPlaneIPEnabled" $) }}
+        - name: get-ip-for-control-plane
+          {{- include "ipamJobContainerCommon" . | nindent 10 }}
           command:
             - "/bin/bash"
             - "-c"
@@ -112,16 +109,42 @@ spec:
                 | base64 -w 0)
               kubectl patch secret -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }}-kubevip-pod --type=merge -p '{"data": {"content": "'${encoded}'"}}'
 
-              echo "New IP has been assigned, upausing the Cluster '{{ include "resource.default.name" $ }}' resource.."
+{{- end }}
+{{- if (include "isIpamSvcLoadBalancerEnabled" $) }}
+        - name: get-ip-for-svc-lb
+          {{- include "ipamJobContainerCommon" . | nindent 10 }}
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |
+              set -o errexit
+              set -o pipefail
+              set -o nounset
+              new_ip=""
+              while [ -z "${new_ip}" ] ; do
+                echo "waiting for a free IP address.."
+                new_ip="$(kubectl get ipaddress -n {{ $.Release.Namespace }} {{ include "lbClaimName" $ }} -o 'jsonpath={.spec.address}')/32"
+                sleep 2
+              done
+              echo "Got the IP: ${new_ip}"
+              # patch the cloud-provider-vsphere-helmrelease
+              {{- if .Values.connectivity.network.loadBalancers.cidrBlocks }}
+              new_ip="${new_ip},{{ join "," .Values.connectivity.network.loadBalancers.cidrBlocks }}"
+              {{- end }}
+              kubectl patch helmrelease -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }}-cloud-provider-vsphere --type=merge -p '{"spec":{"suspend":false,"values":{"kube-vip-cloud-provider": {"cidrGlobal": "'${new_ip}'"}}}}'
+{{- end }}
+      containers:
+        - name: resume-cluster
+          {{- include "ipamJobContainerCommon" . | nindent 10 }}
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |
+              set -o errexit
+              set -o pipefail
+              set -o nounset
+              echo "New IPs have been assigned, upausing the Cluster '{{ include "resource.default.name" $ }}' resource.."
+              kubectl get ipaddress -n {{ $.Release.Namespace }}
               kubectl patch cluster -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} --type=merge -p '{"spec":{"paused":false}}'
-          securityContext:
-            readOnlyRootFilesystem: true
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "10m"
-            limits:
-              memory: "256Mi"
-              cpu: "100m"
 ---
-{{- end -}}
+{{- end }}

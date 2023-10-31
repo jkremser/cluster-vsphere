@@ -1,13 +1,13 @@
-{{- if (include "isIpamControlPlaneIPEnabled" $) -}}
+{{- if (include "isIpamSvcLoadBalancerEnabled" $) -}}
 apiVersion: ipam.cluster.x-k8s.io/v1alpha1
 kind: IPAddressClaim
 metadata:
-  name: {{ include "resource.default.name" $ }}
+  name: {{ include "lbClaimName" $ }}
   labels:
     {{- include "ipamLabels" $ | nindent 4 }}
 spec:
   poolRef:
     apiGroup: ipam.cluster.x-k8s.io
     kind: GlobalInClusterIPPool
-    name: {{ .Values.connectivity.network.controlPlaneEndpoint.ipPoolName }}
+    name: {{ .Values.connectivity.network.loadBalancers.ipPoolName }}
 {{- end }}

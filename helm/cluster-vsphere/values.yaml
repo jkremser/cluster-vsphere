@@ -102,9 +102,10 @@ connectivity:
     controlPlaneEndpoint:
       host: ""   # [string] Manually select an IP for kube API. "" for auto selection from the ipPoolName pool.
       port: 6443
-      ipPoolName: "wc-cp-ips"  # [string] Ip for control plane will be drawn from this InClusterIPPool.
+      ipPoolName: "wc-cp-ips"  # IP address for control plane will be drawn from this GlobalInClusterIPPool.
     loadBalancers:
       cidrBlocks: []
+      ipPoolName: ""  # If this field is not empty, we will allocate one IP from this GlobalInClusterIPPool and add it to loadBalancers.cidrBlocks with '/32' at the end
     pods:
       cidrBlocks:
       - "10.244.0.0/16"

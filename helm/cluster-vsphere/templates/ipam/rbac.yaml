@@ -1,4 +1,4 @@
-{{- if eq (include "isIpamEnabled" $) "true" -}}
+{{- if (include "isIpamEnabled" $) -}}
 # every resource in this file has "helm.sh/hook-weight": "-1" or "-2"
 apiVersion: v1
 kind: ServiceAccount
@@ -34,7 +34,6 @@ rules:
     verbs: ["get", "patch"]
   - apiGroups: ["ipam.cluster.x-k8s.io"]
     resources: ["ipaddresses"]
-    resourceNames: ["{{ include "resource.default.name" $ }}"]
     verbs: ["get", "list"]
   - apiGroups: ["controlplane.cluster.x-k8s.io"]
     resources: ["kubeadmcontrolplanes"]
@@ -44,6 +43,12 @@ rules:
     resources: ["secrets"]
     resourceNames: ["{{ include "resource.default.name" $ }}-kubevip-pod"]
     verbs: ["get", "patch"]
+{{- if (include "isIpamSvcLoadBalancerEnabled" $) }}
+  - apiGroups: ["helm.toolkit.fluxcd.io"]
+    resources: ["helmreleases"]
+    resourceNames: ["{{ include "resource.default.name" $ }}-cloud-provider-vsphere"]
+    verbs: ["get", "patch"]
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -65,4 +70,4 @@ roleRef:
   name: "{{ include "resource.default.name" $ }}-update-values-hook"
   apiGroup: rbac.authorization.k8s.io
 ---
-{{- end -}}
+{{- end }}

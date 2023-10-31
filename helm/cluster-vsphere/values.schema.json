@@ -10,9 +10,8 @@
 				],
 				"type": "string"
 			},
-			"minItems": 1,
-			"maxItems": 1,
-			"type": "array"
+			"type": "array",
+			"minItems": 1
 		}
 	},
 	"properties": {
@@ -157,7 +156,7 @@
 								},
 								"ipPoolName": {
 									"title": "Ip Pool Name",
-									"description": "Ip for control plane will be drawn from this InClusterIPPool resource.",
+									"description": "Ip for control plane will be drawn from this GlobalInClusterIPPool resource.",
 									"type": "string",
 									"pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
 									"default": "wc-cp-ips"
@@ -195,14 +194,27 @@
 							"type": "object"
 						},
 						"loadBalancers": {
-							"properties": {
-								"cidrBlocks": {
-									"$ref": "#/$defs/cidrBlocks",
-									"title": "Load Balancer subnets"
+							"anyOf": [
+								{
+									"properties": {
+										"cidrBlocks": {
+											"$ref": "#/$defs/cidrBlocks",
+											"title": "Load Balancer subnets"
+										}
+									},
+									"required": ["cidrBlocks"]
+								},
+								{
+									"properties": {
+										"ipPoolName": {
+											"title": "Ip Pool Name",
+											"description": "Ip for Service LB running in WC will be drawn from this GlobalInClusterIPPool resource.",
+											"type": "string",
+											"pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+										}
+									},
+									"required": ["ipPoolName"]
 								}
-							},
-							"required": [
-								"cidrBlocks"
 							],
 							"title": "Load balancers",
 							"type": "object"

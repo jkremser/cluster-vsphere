@@ -18,11 +18,11 @@ data:
         allowAllEgress: true
         controlPlaneEndpoint:
           host: ""
-          ipPoolName: wc-cp-ips
+          ipPoolName: wc-cp-ips  # auto allocated from this pool (GlobalInClusterIpPool crd). When left empty, no allocation is happening.
           port: 6443
         loadBalancers:
-          cidrBlocks:
-          - "10.10.222.180/32"
+          cidrBlocks: []  # explicit cidr ranges 
+          ipPoolName: svc-lb-ips  # auto allocated from this pool (only 1 ip) When left empty, no allocation is happening.
     controlPlane:
       replicas: 3
       catalog: "giantswarm"

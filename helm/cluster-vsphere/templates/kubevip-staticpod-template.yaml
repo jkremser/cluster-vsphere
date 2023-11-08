@@ -24,7 +24,7 @@ stringData:
         - name: vip_address
           value: {{ .Values.connectivity.network.controlPlaneEndpoint.host }}
         - name: vip_interface
-          value: eth0
+          value: ens192
         - name: vip_leaseduration
           value: "15"
         - name: vip_renewdeadline

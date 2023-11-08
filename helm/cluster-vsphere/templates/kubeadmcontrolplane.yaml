@@ -92,26 +92,27 @@ spec:
           authorization-always-allow-paths: "/healthz,/readyz,/livez,/metrics"
           bind-address: "0.0.0.0"
     {{- include "sshUsers" . | nindent 4 }}
+    {{- include "ignitionSpec" . | nindent 4 }}
     initConfiguration:
       skipPhases:
         - addon/coredns
         - addon/kube-proxy
       patches:
-        directory: "/tmp/kubeadm/patches"
+        directory: "/etc/kubernetes/patches"
       nodeRegistration:
         criSocket: /run/containerd/containerd.sock
         kubeletExtraArgs:
           {{- include "kubeletExtraArgs" . | nindent 10}}
     joinConfiguration:
       patches:
-        directory: "/tmp/kubeadm/patches"
+        directory: "/etc/kubernetes/patches"
       nodeRegistration:
         criSocket: /run/containerd/containerd.sock
         kubeletExtraArgs:
           {{- include "kubeletExtraArgs" . | nindent 10}}
     files:
       - path: /etc/kubernetes/manifests/kube-vip.yaml
-        owner: root:root
+        permissions: "0600"
         contentFrom:
           secret:
             name: {{ include "resource.default.name" $ }}-kubevip-pod
@@ -123,8 +124,9 @@ spec:
       {{- include "containerdProxyConfig" . | nindent 6}}
       {{- end }}
       {{- include "containerdConfig" . | nindent 6 }}
-      {{- range $kubeadmPatch, $_ :=  .Files.Glob  "files/etc/patches/**" }}
-      - path: {{ (printf "/tmp/kubeadm/patches/%s" (base $kubeadmPatch)) }}
+      {{- range $kubeadmPatch, $_ :=  .Files.Glob  "files/etc/kubernetes/patches/**" }}
+      - path: {{ (printf "/etc/kubernetes/patches/%s" (base $kubeadmPatch)) }}
+        permissions: "0600"
         content: |-
           {{- $.Files.Get $kubeadmPatch | nindent 10 }}
       {{- end }}
@@ -137,16 +139,13 @@ spec:
             key: encryption
       {{- end }}
     preKubeadmCommands:
-      # - bash /tmp/kubeadm/patches/kube-apiserver-patch.sh {{ .Values.controlPlane.resourceRatio }}
+      {{- include "sshPreKubeadmCommands" . | nindent 6 }}
+      - bash /etc/kubernetes/patches/kube-apiserver-patch.sh {{ .Values.controlPlane.resourceRatio }}
       - /bin/test ! -d /var/lib/kubelet && (/bin/mkdir -p /var/lib/kubelet && /bin/chmod 0750 /var/lib/kubelet)
-      {{- include "hostsAndHostname" . | nindent 6 }}
       {{- if $.Values.proxy.enabled }}
       - systemctl daemon-reload
       - systemctl restart containerd
       {{- end }}
-    postKubeadmCommands:
-      {{- include "sshPostKubeadmCommands" . | nindent 6 }}
-    useExperimentalRetryJoin: true
   machineTemplate:
     infrastructureRef:
       apiVersion: {{ include "infrastructureApiVersion" . }}

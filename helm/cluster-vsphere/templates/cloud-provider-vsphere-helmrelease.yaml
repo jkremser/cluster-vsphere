@@ -52,3 +52,6 @@ spec:
         thumbprint: "{{ .Values.vcenter.thumbprint }}"
     kube-vip-cloud-provider:
       cidrGlobal: '{{ join "," .Values.connectivity.network.loadBalancers.cidrBlocks }}'
+    kube-vip:
+      env:
+        vip_interface: "ens192"

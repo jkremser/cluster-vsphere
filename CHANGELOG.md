@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2023-11-15
+
 ### Changed
 
 - Bump `cilium` to `0.17.0`.
@@ -156,7 +158,8 @@ at least 1 public IP is always needed for the ingress controller to be able to e
 
 - Initial chart implementation.
 
-[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.1...HEAD
+[0.9.1]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/giantswarm/cluster-vsphere/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/giantswarm/cluster-vsphere/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/giantswarm/cluster-vsphere/compare/v0.7.0...v0.7.1

@@ -89,7 +89,7 @@ spec:
               new_ip=""
               while [ -z "${new_ip}" ] ; do
                 echo "waiting for a free IP address.."
-                new_ip=$(kubectl get ipaddress -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} -o 'jsonpath={.spec.address}') || true
+                new_ip=$(kubectl get ipaddress --ignore-not-found -n {{ $.Release.Namespace }} {{ include "resource.default.name" $ }} -o 'jsonpath={.spec.address}')
                 sleep 2
               done
               echo "Got the IP: ${new_ip}"
@@ -123,11 +123,11 @@ spec:
               new_ip=""
               while [ -z "${new_ip}" ] ; do
                 echo "waiting for a free IP address.."
-                new_ip="$(kubectl get ipaddress -n {{ $.Release.Namespace }} {{ include "lbClaimName" $ }} -o 'jsonpath={.spec.address}')" || true
+                new_ip=$(kubectl get ipaddress --ignore-not-found -n {{ $.Release.Namespace }} {{ include "lbClaimName" $ }} -o 'jsonpath={.spec.address}')
                 sleep 2
               done
               echo "Got the IP: ${new_ip}"
-              new_ip=${new_ip}/32"
+              new_ip="${new_ip}/32"
               # patch the cloud-provider-vsphere-helmrelease
               {{- if .Values.connectivity.network.loadBalancers.cidrBlocks }}
               new_ip="${new_ip},{{ join "," .Values.connectivity.network.loadBalancers.cidrBlocks }}"

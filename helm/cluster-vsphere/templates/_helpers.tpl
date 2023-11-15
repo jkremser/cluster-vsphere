@@ -221,10 +221,23 @@ ignition:
             After=coreos-metadata.service
             [Service]
             Type=oneshot
+            RemainAfterExit=yes
             EnvironmentFile=/run/metadata/coreos
             ExecStart=/opt/set-hostname
             [Install]
             WantedBy=multi-user.target
+        - name: ethtool-segmentation.service
+          enabled: true
+          contents: |
+            [Unit]
+            After=network.target
+            [Service]
+            Type=oneshot
+            RemainAfterExit=yes
+            ExecStart=/usr/sbin/ethtool -K ens192 tx-udp_tnl-csum-segmentation off
+            ExecStart=/usr/sbin/ethtool -K ens192 tx-udp_tnl-segmentation off
+            [Install]
+            WantedBy=default.target
         - name: kubeadm.service
           enabled: true
           dropins:

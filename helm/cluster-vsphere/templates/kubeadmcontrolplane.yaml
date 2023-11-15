@@ -91,6 +91,8 @@ spec:
         extraArgs:
           authorization-always-allow-paths: "/healthz,/readyz,/livez,/metrics"
           bind-address: "0.0.0.0"
+      networking:
+        serviceSubnet: {{ join "," .Values.connectivity.network.services.cidrBlocks }}
     {{- include "sshUsers" . | nindent 4 }}
     {{- include "ignitionSpec" . | nindent 4 }}
     initConfiguration:

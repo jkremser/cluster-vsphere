@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bump `cilium` to `0.17.0`.
+- Bump `coredns` to `1.19.0`.
+- Enable renovate for `cilium` and `coredns`.
+
+
 ## [0.9.0] - 2023-11-08
 
 ### Changed

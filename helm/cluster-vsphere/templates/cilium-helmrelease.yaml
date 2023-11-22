@@ -32,6 +32,9 @@ spec:
   # Default values
   # https://github.com/giantswarm/cilium-app/blob/main/helm/cilium/values.yaml
   values:
+    global:
+      podSecurityStandards:
+        enforced: true
     ipam:
       mode: kubernetes
     k8sServiceHost: api.{{ include "resource.default.name" $ }}.{{ .Values.baseDomain }}

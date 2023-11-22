@@ -42,6 +42,10 @@ spec:
       targetPath: "global.config.password"
   values:
     global:
+      {{- if semverCompare ">=1.25" .Values.cluster.kubernetesVersion }}
+      podSecurityStandards:
+        enforced: true
+      {{- end }}
       config:
         enabled: true
         clusterId: {{ include "resource.default.name" $ }}

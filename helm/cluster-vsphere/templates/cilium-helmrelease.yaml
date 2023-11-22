@@ -32,6 +32,11 @@ spec:
   # Default values
   # https://github.com/giantswarm/cilium-app/blob/main/helm/cilium/values.yaml
   values:
+    {{- if semverCompare ">=1.25" .Values.cluster.kubernetesVersion }}
+    global:
+      podSecurityStandards:
+        enforced: true
+    {{- end }}
     ipam:
       mode: kubernetes
     k8sServiceHost: api.{{ include "resource.default.name" $ }}.{{ .Values.baseDomain }}

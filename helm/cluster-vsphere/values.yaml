@@ -98,7 +98,7 @@ kubectlImage:
 
 connectivity:
   network:
-    allowAllEgress: false
+    allowAllEgress: true
     controlPlaneEndpoint:
       host: ""   # [string] Manually select an IP for kube API. "" for auto selection from the ipPoolName pool.
       port: 6443

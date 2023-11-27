@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Remove `TTLAfterFinished` flag for Kubernetes 1.25 compatibility (enabled by default).
+
 ## [0.9.2] - 2023-11-15
 
 ## [0.9.1] - 2023-11-15

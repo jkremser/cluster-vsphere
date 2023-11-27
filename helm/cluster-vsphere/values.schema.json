@@ -44,7 +44,7 @@
 					"type": "string"
 				},
 				"featureGates": {
-					"default": "TTLAfterFinished=true",
+					"default": "",
 					"description": "Enabled feature gates, as a comma-separated list.",
 					"title": "Feature gates",
 					"type": "string"

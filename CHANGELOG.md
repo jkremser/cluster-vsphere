@@ -10,9 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Remove `TTLAfterFinished` flag for Kubernetes 1.25 compatibility (enabled by default).
+- Remove `ExpandPersistentVolumes` flag for Kubernetes 1.27 compatibility (enabled by default).
 - Remove `logtostderr` for Kubernetes 1.27 compatibility (output is logged to stderr by default).
 
 ## [0.9.2] - 2023-11-15
+
+### Fixed
+
+- Minor fix and use of `--ignore-not-found` in IPAM.
 
 ## [0.9.1] - 2023-11-15
 

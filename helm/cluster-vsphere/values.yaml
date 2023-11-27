@@ -3,7 +3,7 @@ apiServer:
   featureGates: ""
   certSANs: []
 controllerManager:
-  featureGates: "ExpandPersistentVolumes=true"
+  featureGates: ""
 
 clusterDescription: ""  # Cluster description used in metadata.
 organization: ""  # The organization which owns this cluster.

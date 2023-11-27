@@ -32,7 +32,6 @@ spec:
           {{- end }}
           feature-gates: {{ .Values.apiServer.featureGates }}
           kubelet-preferred-address-types: "InternalIP"
-          logtostderr: "true"
           {{- if .Values.oidc.issuerUrl }}
           {{- with .Values.oidc }}
           oidc-issuer-url: {{ .issuerUrl }}
@@ -75,7 +74,6 @@ spec:
           enable-hostpath-provisioner: "true"
           terminated-pod-gc-threshold: "125"
           feature-gates: {{ .Values.controllerManager.featureGates }}
-          logtostderr: "true"
           profiling: "false"
       dns:
         imageRepository: {{ .Values.controlPlane.dns.imageRepository }}

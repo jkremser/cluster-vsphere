@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- If `connectivity.network.allowAllEgress` is false (which is the default value), the deny-all network policies for
+namespaces `giantswarm` and `kube-system` will be applied to the resulting cluster. In terms of API, this is a compatible
+change but in terms of internal behavior it can be potentially :boom: **Breaking:**.
+
 ### Changed
 
 - Remove `TTLAfterFinished` flag for Kubernetes 1.25 compatibility (enabled by default).

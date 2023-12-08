@@ -30,7 +30,9 @@ spec:
           {{- if $.Values.cluster.enableEncryptionProvider }}
           encryption-provider-config: /etc/kubernetes/encryption/config.yaml
           {{- end }}
-          feature-gates: {{ .Values.apiServer.featureGates }}
+          {{- with .Values.apiServer.featureGates }}
+          feature-gates: {{ . }}
+          {{- end }}
           kubelet-preferred-address-types: "InternalIP"
           {{- if .Values.oidc.issuerUrl }}
           {{- with .Values.oidc }}

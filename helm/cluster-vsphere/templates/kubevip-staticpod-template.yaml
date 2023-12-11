@@ -36,7 +36,7 @@ stringData:
           value: "10"
         - name: vip_retryperiod
           value: "2"
-        image: docker.io/giantswarm/kube-vip:v0.6.3
+        image: docker.io/giantswarm/kube-vip:v0.6.4
         imagePullPolicy: IfNotPresent
         name: kube-vip
         resources: {}

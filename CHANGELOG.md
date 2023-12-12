@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix templating issues of feature-gates.
+
 ## [0.9.4] - 2023-12-11
 
 ## [0.9.3] - 2023-12-07

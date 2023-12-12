@@ -30,9 +30,7 @@ spec:
           {{- if $.Values.cluster.enableEncryptionProvider }}
           encryption-provider-config: /etc/kubernetes/encryption/config.yaml
           {{- end }}
-          {{- with .Values.apiServer.featureGates }}
-          feature-gates: {{ . }}
-          {{- end }}
+          feature-gates: {{ .Values.apiServer.featureGates | quote }}
           kubelet-preferred-address-types: "InternalIP"
           {{- if .Values.oidc.issuerUrl }}
           {{- with .Values.oidc }}
@@ -75,7 +73,7 @@ spec:
           cloud-provider: external
           enable-hostpath-provisioner: "true"
           terminated-pod-gc-threshold: "125"
-          feature-gates: {{ .Values.controllerManager.featureGates }}
+          feature-gates: {{ .Values.controllerManager.featureGates | quote }}
           profiling: "false"
       dns:
         imageRepository: {{ .Values.controlPlane.dns.imageRepository }}

@@ -57,6 +57,21 @@
 			"title": "Kubernetes API server",
 			"type": "object"
 		},
+		"controllerManager": {
+			"properties": {
+				"featureGates": {
+					"default": "",
+					"description": "Enabled feature gates, as a comma-separated list.",
+					"title": "Feature gates",
+					"type": "string"
+				}
+			},
+			"required": [
+				"featureGates"
+			],
+			"title": "Kubernetes Controller Manager",
+			"type": "object"
+		},
 		"controlPlane": {
 			"properties": {
 				"etcd": {

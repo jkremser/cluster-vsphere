@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.6] - 2023-12-14
+
 ### Fixed
 
 - Fix cleanup of netpol helmrelease.
@@ -190,7 +192,8 @@ at least 1 public IP is always needed for the ingress controller to be able to e
 
 - Initial chart implementation.
 
-[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.5...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.6...HEAD
+[0.9.6]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.5...v0.9.6
 [0.9.5]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.4...v0.9.5
 [0.9.4]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.2...v0.9.3

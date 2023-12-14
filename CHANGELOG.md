@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix cleanup of netpol helmrelease.
+
 ## [0.9.5] - 2023-12-12
 
 ### Fixed

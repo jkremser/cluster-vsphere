@@ -2,6 +2,7 @@ apiVersion: v2
 name: cluster-vsphere
 version: 0.9.6
 home: https://github.com/giantswarm/cluster-vsphere
+icon: https://s.giantswarm.io/app-icons/vsphere/2/icon-light.png
 sources:
   - https://github.com/giantswarm/cluster-vsphere
 description: "A helm chart for creating Cluster API clusters with the vSphere provider (CAPV)."

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump Cilium to `0.19.0`.
+- Bump Cilium to `0.19.2`.
 
 ## [0.9.6] - 2023-12-14
 

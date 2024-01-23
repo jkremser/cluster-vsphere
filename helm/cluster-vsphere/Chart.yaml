@@ -1,6 +1,6 @@
 apiVersion: v2
 name: cluster-vsphere
-version: 0.9.6
+version: 0.9.7
 home: https://github.com/giantswarm/cluster-vsphere
 icon: https://s.giantswarm.io/app-icons/vsphere/2/icon-light.png
 sources:

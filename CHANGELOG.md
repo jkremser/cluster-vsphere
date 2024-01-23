@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.7] - 2024-01-23
+
 ### Added
 
 - Add teleport.service: Secure SSH access via Teleport
@@ -204,7 +206,8 @@ at least 1 public IP is always needed for the ingress controller to be able to e
 
 - Initial chart implementation.
 
-[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.6...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.7...HEAD
+[0.9.7]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.6...v0.9.7
 [0.9.6]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.5...v0.9.6
 [0.9.5]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.4...v0.9.5
 [0.9.4]: https://github.com/giantswarm/cluster-vsphere/compare/v0.9.3...v0.9.4

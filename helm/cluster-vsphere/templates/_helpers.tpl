@@ -88,6 +88,17 @@ Create a prefix for all resource names.
       key: containerdProxy   
 {{- end -}}
 
+{{- define "teleportProxyConfig" -}}
+{{- if $.Values.internal.teleport.enabled }}
+- path: /etc/systemd/system/teleport.service.d/99-http-proxy.conf
+  permissions: "0600"
+  contentFrom:
+    secret:
+      name: {{ include "containerdProxySecret" $ }}
+      key: containerdProxy
+{{- end }}
+{{- end -}}
+
 {{/*
 Updates in KubeadmConfigTemplate will not trigger any rollout for worker nodes.
 It is necessary to create a new template with a new name to trigger an upgrade.
@@ -105,9 +116,11 @@ joinConfiguration:
       node-labels: "giantswarm.io/node-pool={{ .pool.name }}"
 files:
   {{- include "sshFiles" . | nindent 2}}
+  {{- include "teleportFiles" . | nindent 2 }}
   {{- include "containerdConfig" . | nindent 2 }}
   {{- if $.Values.proxy.enabled }}
     {{- include "containerdProxyConfig" . | nindent 2}}
+    {{- include "teleportProxyConfig" . | nindent 2 }}
   {{- end }}
 preKubeadmCommands:
 {{ include "sshPreKubeadmCommands" . }}
@@ -115,6 +128,9 @@ preKubeadmCommands:
   {{- if $.Values.proxy.enabled }}
 - systemctl daemon-reload
 - systemctl restart containerd
+  {{- if $.Values.internal.teleport.enabled }}
+- systemctl restart teleport
+  {{- end }}
   {{- end }}
 postKubeadmCommands:
 - usermod -aG root nobody # required for node-exporter to access the host's filesystem
@@ -176,6 +192,28 @@ To enforce upgrades, a version suffix is appended to secret name.
 {{- include "resource.default.name" $ }}-credentials
 {{- end -}}
 
+{{/*
+The secret `-teleport-join-token` is created by the teleport-operator in cluster namespace
+and is used to join the node to the teleport cluster.
+*/}}
+{{- define "teleportFiles" -}}
+{{- if $.Values.internal.teleport.enabled }}
+- path: /etc/teleport-join-token
+  permissions: "0644"
+  contentFrom:
+    secret:
+      name: {{ include "resource.default.name" $ }}-teleport-join-token
+      key: joinToken
+- path: /opt/teleport-node-role.sh
+  permissions: "0755"
+  encoding: base64
+  content: {{ $.Files.Get "files/opt/teleport-node-role.sh" | b64enc }}
+- path: /etc/teleport.yaml
+  permissions: "0644"
+  encoding: base64
+  content: {{ tpl ($.Files.Get "files/etc/teleport.yaml") . | b64enc }}
+{{- end }}
+{{- end -}}
 
 {{- define "ignitionSpec" -}}
 format: ignition
@@ -250,4 +288,21 @@ ignition:
               [Service]
               # Make metadata environment variables available for pre-kubeadm commands.
               EnvironmentFile=/run/metadata/*
+        {{- if $.Values.internal.teleport.enabled }}
+        - name: teleport.service
+          enabled: true
+          contents: |
+            [Unit]
+            Description=Teleport Service
+            After=network.target
+            [Service]
+            Type=simple
+            Restart=on-failure
+            ExecStart=/opt/bin/teleport start --roles=node --config=/etc/teleport.yaml --pid-file=/run/teleport.pid
+            ExecReload=/bin/kill -HUP $MAINPID
+            PIDFile=/run/teleport.pid
+            LimitNOFILE=524288
+            [Install]
+            WantedBy=multi-user.target
+          {{- end }}
 {{- end -}}

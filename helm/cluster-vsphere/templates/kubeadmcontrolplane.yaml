@@ -119,9 +119,11 @@ spec:
             key: content
 
       {{- include "sshFiles" . | nindent 6}}
+      {{- include "teleportFiles" . | nindent 6 }}
       {{- include "auditLogFiles" . | nindent 6 }}
       {{- if $.Values.proxy.enabled }}
       {{- include "containerdProxyConfig" . | nindent 6}}
+      {{- include "teleportProxyConfig" . | nindent 6 }}
       {{- end }}
       {{- include "containerdConfig" . | nindent 6 }}
       {{- range $kubeadmPatch, $_ :=  .Files.Glob  "files/etc/kubernetes/patches/**" }}
@@ -145,6 +147,9 @@ spec:
       {{- if $.Values.proxy.enabled }}
       - systemctl daemon-reload
       - systemctl restart containerd
+      {{- if $.Values.internal.teleport.enabled }}
+      - systemctl restart teleport
+      {{- end }}
       {{- end }}
   machineTemplate:
     infrastructureRef:

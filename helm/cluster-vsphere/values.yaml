@@ -125,6 +125,10 @@ connectivity:
 #       identitytoken: ""
 
 internal:
+  teleport:
+    proxyAddr: teleport.giantswarm.io:443
+    version: 14.1.3
+    enabled: true
   sandboxContainerImage:
     name: giantswarm/pause
     registry: quay.io
